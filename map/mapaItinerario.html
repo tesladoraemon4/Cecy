@@ -1,0 +1,38 @@
+<!--
+	Muestra un mapa con la opcion de agregar mas lugares al itinerario
+-->
+
+<div class="row">
+	<div id="mapContainer" style="width: 600px; height: 400px"></div>
+</div>
+<div class="row">
+	<form>
+		<div class="form-group" >
+			<label for="1" class="form-label col-md-2 control-label">Buscar lugares</label>
+			<div class="col-md-10">
+
+				<input type="text" ng-model="textoBusqueda" ng-change="buscar(textoBusqueda)" 
+				list="sug" class="form-control"  id="1"> 
+
+				<span ng-show="cargando">Cargando...</span>
+
+				<datalist id="sug">
+					<div ng-repeat="sugerencia in sugerencias">
+						<option value={{sugerencia.label}} label={{sugerencia.label}}></option>
+					</div>
+				</datalist>
+			</div>
+		</div>
+		<div class="btn btn-prymary" ng-click="peticionEvt()">Buscar</div>	
+	</form>
+	<div class="" ng-repeat="lugar in lugares">
+		Direcciones: <br>
+		<div ng-if="isId">
+			{{lugar.location.address}} <div class="btn btn-primary" ng-click="anadirAgenda(this)">Añadir Agenda</div>
+		</div>
+		<div ng-if="!isId">
+			{{lugar.Location}} <div class="btn btn-primary" ng-value="{{lugar.Location.Address}}" ng-click="anadirAgenda(this)">Añadir Agenda</div>
+		</div>
+
+	</div>
+</div>

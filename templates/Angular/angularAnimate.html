@@ -1,0 +1,58 @@
+
+
+<div class="container">
+	
+
+	<div class="contenido" ng-if="bol">
+		HOLA
+	</div>
+
+	<buttom class="btn btn-primary" ng-click="bol=true">Verdad</buttom>
+
+	<buttom class="btn btn-primary" ng-click="bol=false">Falso</buttom>
+
+
+	<br>
+
+
+	<h1>Luces a una animacion
+		<small>
+			
+		</small>
+	</h1>
+	<div ng-class="{Identifi:onOff}" class="highlight">
+	  Highlight this box
+	</div>
+	<button ng-click="onOff=!onOff">Toggle</button>
+
+	<style>
+	.highlight {
+	  transition:1s linear all;
+	}
+	.highlight.Identifi-add {/*Cuando sale de la trancicion y bandera en falsa*/
+	  background:white;
+	}
+	.highlight.Identifi {/*cuando bandera es verdadero*/
+	  background:yellow;
+	}
+	.highlight.Identifi-remove {/*trancisicion cuando cambia de true a false*/
+		animation: my_fade_animation 0.5s linear;
+		-webkit-animation: my_fade_animation 0.5s linear;
+	}
+
+
+	@keyframes my_fade_animation {
+	  from { opacity:1; }
+	  to { opacity:0; }
+	}
+
+	@-webkit-keyframes my_fade_animation {
+	  from { opacity:1; }
+	  to { opacity:0; }
+	}
+
+	</style>
+
+
+
+</div>

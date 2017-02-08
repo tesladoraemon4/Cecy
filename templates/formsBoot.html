@@ -1,0 +1,227 @@
+<div ng-control="ControlX">
+{{h}}
+	<div class="container">
+		<h1>Formularios <br>
+		<small>Se utiliza la clase <div class="bg-primary">form-control</div class="bg-primary"> solo en estos elementos
+		No se usan las clases para dispisitivos moviles</small>
+		</h1>
+		<lu>
+			<ul>input</ul>
+			<ul>select</ul>
+			<ul>textarea</ul>
+		</lu>
+		
+		<h1>Formulario horizontal form.form-horizontal EN EL div y label van las propiedades COL<small>label.form-label div>input.form-control</small></h1>
+
+
+
+		<h1>
+		Manejar check box 
+		<small>
+			div.checkbox>label>input 
+		</small></h1>
+	
+
+		<form action="">
+			<div class="checkbox">
+				<label>
+					<input type="checkbox">hgfdh
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox">dfghdf
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox">dfghfd
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox">dfghdf
+				</label>
+			</div>
+		</form>
+		
+		
+		<div class="container" >
+			<form action="">
+				<div class="radio">
+					<label>
+						<input name="radios" class="form-control" type="radio" id="radio1">botoncitoX1
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input name="radios" class="form-control" type="radio" id="radio2">botoncitoX2
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input name="radios" class="form-control" type="radio" id="radio3">botoncitoX3
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input name="radios" class="form-control" type="radio" id="radio4">botoncitoX4
+					</label>
+				</div>
+			</form>
+		</div>
+
+
+
+
+
+	<div class="radio">
+	  <label>
+	    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+	    Option one is this and that&mdash;be sure to include why it's great
+	  </label>
+	</div>
+	<div class="radio">
+	  <label>
+	    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+	    Option two can be something else and selecting it will deselect option one
+	  </label>
+	</div>
+
+
+
+
+
+
+		<h2>control-label <small>Se usa para acomodar el contenido de los labels</small></h2>
+		<div class="container">
+			<form class="form-horizontal">
+				<h1>
+					la clase has-X (NO SE PUEDE USAR CON ANGULAR)
+				<small>
+					<p>X:</p>
+					<p>success</p>
+					<p>error</p>
+				</small></h1>
+
+				<div ng-class="form-group" >
+					<label for="1" class="form-label col-md-2 control-label">input1</label>
+					<div class="col-md-10">
+						<input type="text" id="1" class="form-control" ng-model="campo">
+					</div>
+				</div>
+				<br>
+
+				<div class="form-group">
+					<label for="7" class="form-label col-md-2 control-label">input2</label>
+					<div class="col-md-10">
+						<input type="text" id="7" class="form-control">
+					</div>
+					<br>
+				</div>
+				<div class="form-group">
+					<div class="checkbox col-md-10 col-md-offset-2">
+						<label>
+							<input type="checkbox">	check
+						</label>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="control-label col-md-2" for="h">		nombre
+					</label>
+					<div class="col-md-10" >
+						<p class="form-control-static " id="h">asdjkfhasd</p>
+					</div> 
+				</div>
+
+
+
+				<h1>col-md-offset-2 <small>desplaza a la derecha el contenedor</small></h1>
+				<div class="form-group">
+					<div class="checkbox col-md-10 col-md-offset-2">
+						<label>
+							<buttom class="form-container">botoncito</buttom>
+						</label>
+					</div>
+				</div>
+			</form>
+		</div>
+
+
+
+
+
+
+
+
+		<form action="" class="">
+			<h1>class form-group junta los contenidos (formulario responsive)<br>
+			form.form-inline sirve para poner en una sola linea los contenidos <mark>(NO RESPONSIVE)</mark>
+			</h1>
+			<div class="form-group">
+				<label for="1">Escribe algo</label><br>
+				<input type="text" id="1" class="form-control"><br>
+			</div>
+
+			<div class="form-group">
+				<label for="2"></label>Text area <br>
+				<textarea name="" id="" cols="30" rows="10" id="1" class="form-control">
+				</textarea><br>
+			</div>
+			
+			<div class="form-group">
+				<label for="3">Segundo</label><br>
+				<select name="" id="3" class="form-control">
+					<option value="">opcion1</option>
+				</select><br>
+				
+			</div>
+
+			<div class="form-group">
+				
+				<label for="4">Botoncito 4</label><br>
+				<input type="text" id="4" class="form-control"><br>
+				
+			</div>
+			<h1>
+				Botones
+			<small>
+				Usar la clase btn btn-primary
+			</small></h1>
+			<div class="form-group">
+
+				<label for="5">BOtoncito</label><br>
+				<button id="5" class="btn btn-primary">botoncito</button><br>
+
+			</div>
+		</form>
+
+
+		<h1>form.form-inline
+			<small>
+				
+			</small>
+		</h1>
+		<form action="" class="form-inline">
+			<div class="form-group">
+				<h1>Mostrar solo para el labes
+				<small>clase sr-only en label solo muestra para dispositivos de escritura (NO SOPORTAN EL PLACE OLDER)</small></h1>
+				<label for="6" class="sr-only">Correo</label>
+				<label for="6" >Correo</label>
+				<div class="sr-only">
+					@
+				</div>
+				<input class="form-control" type="email" id="6">
+				
+			</div>
+		
+			<h1>Crear una cajita a una lado<small>div.form-group > div.input-group</small></h1>
+
+			<div class="form-group input-group">
+					<div class="input-group-addon">@</div>
+					<input type="text" class="form-control">
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html ng-app="pagina">
+
+<head>
+
+    <title>Inicio</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+
+
+    <!--Cargamos here-->
+    <link rel="stylesheet" type="text/css" href="https://js.cit.api.here.com/v3/3.0/mapsjs-ui.css" />
+    <script type="text/javascript" src="https://js.cit.api.here.com/v3/3.0/mapsjs-core.js"></script>
+    <script type="text/javascript" src="https://js.cit.api.here.com/v3/3.0/mapsjs-service.js"></script>
+    <script type="text/javascript" src="https://js.cit.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+    <script type="text/javascript" src="https://js.cit.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+    <!--modulo de busquedas-->
+    <script src="map/itinerario.js"></script>
+    <script src="map/mapaProvider.js"></script>
+    <!--Modulo de posicionamiento-->
+    <script src="bower_components/ngGeolocation/ngGeolocation.min.js"></script>
+    <script src="map/positioning.js"></script>
+
+        
+    <!--para el modulo de buscar lugares por categorias
+    <script src="map/mapaLugares.js"></script>
+    <script src="map/mapaProvider.js"></script>
+    <script src="map/categorias.js"></script>
+    -->
+
+
+
+
+
+
+
+    <script src="app-dependences.js"></script>
+    <script src="app-controllers.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    
+
+
+</head>
+<body>
+    <header>
+        <div class="container" align="center">
+            <h1 align="left">Titulo pagina</h1>
+        <nav>
+            <a class="btn btn-info" href="index.html" >Inicio</a>
+            <a class="btn btn-info" href="#quienesSomos" >Quienes somos?</a>
+            <a class="btn btn-info" href="#aprendiendoBoot" >Aprendiendo Boot</a>
+            <a class="btn btn-info" href="#aprendiendoAngular" >Angular Aprendiendo</a>
+            <a class="btn btn-info" href="#contacto" >Contactanos</a>
+            <a class="btn btn-info" href="templates/itinerario.html" >Itinerario (pruebas)</a>
+            <boton-agregar></boton-agregar>
+        </nav>
+            <br>
+        </div>  
+    </header>
+    <br>
+    <div ng-controller="home">
+        <div class="container">
+            <!-- Columana principal -->
+            <section class="main row">  
+                <article  class="col-md-12 ">
+                        <h3>
+                            CARRUSEL IMAGENES
+                        </h3>
+                        <p>
+                        
+                            <mapa-itinerario></mapa-itinerario>
+                        </p>
+                </article>  
+                <article class="col-md-10 col-sm-9 col-xs-10">
+                    ENFEMERIDES
+                </article>
+                <aside class="col-md-2 col-sm-3 col-xs-2">
+                    COMPRAR ENTRADAS
+                </aside>
+                <article class="col-md-10 col-sm-9 col-xs-10">
+                    NOTICIAS
+                </article>
+                <aside class="col-md-2 col-sm-3 col-xs-2">
+                    CLIMA
+                </aside>
+            </section>
+        </div>
+    </div>
+    <div class="clearfix visible-sm-block"></div>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3  col-md-3 col-sm-3 col-xs-2 col-sm-offset-1 col-xs-offset-2">
+                    <img src="templates/images/git.png" class="img-responsive">
+                </div>
+                <div class="col-lg-3  col-md-3 col-sm-3 col-xs-2 col-sm-offset-1 col-xs-offset-2">
+                    <img src="templates/images/facebook.png" alt="" class="img-responsive">
+                </div>
+                <div class="col-lg-3  col-md-3 col-sm-3 col-xs-2 col-sm-offset-1 col-xs-offset-2">
+                    <img src="templates/images/facebook.png" alt="" class="img-responsive">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-lg-offset-5 col-md-3 col-md-offset-5 
+                            col-sm-3 col-sm-offset-5 col-xs-3 col-xs-offset-5">
+                    <a href="#" class="tipografia">Contacto</a><br>
+                    <a href="#" class="tipografia">Terminos y condiciones</a><br>
+                    <a href="#" class="tipografia">Telefono</a><br>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<div class="row">
+	<div id="mapContainer" style="width: 600px; height: 400px"></div>
+	
+</div>
+
+<div class="row">
+	<form>
+		<div class="form-group" >
+			<label for="1" class="form-label col-md-2 control-label">Buscar lugares</label>
+			<div class="col-md-10">
+				<input ng-onkeypress="esEnter(event)" ng-change="peticionEvt()" type="text" id="1" class="form-control" ng-model="searchText">
+			</div>
+			<datalist>
+				<option value="" ></option>
+			</datalist>
+
+		</div>
+		<div class="btn btn-prymary" ng-click="peticionEvt()">Buscar</div>	
+	</form>
+	<div class="" ng-repeat="lugar in lugares">
+		Direcciones: <br>
+		{{lugar.Location}} <div class="btn btn-primary" ng-value="{{lugar.Location.Address}}" ng-click="anadirAgenda(this)">Añadir Agenda</div>
+	</div>
+</div>
+

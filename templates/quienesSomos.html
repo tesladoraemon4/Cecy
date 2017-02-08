@@ -1,0 +1,57 @@
+<h1>Formulario probando</h1><br>
+<div class="row">
+	<article class="col-md-9 ">
+		<form  name="form" method="POST" accept-charset="utf-8" novalidate>
+			<div class="row">
+				<input id="camp1" type="email" name ="email"class="form-control  col-md-5" placeholder="nombre" aria-describedby="basic-addon2" ng-model="obj.nombre" required>
+				<div ng-show="form.$submitted || form.numero.$touched">
+					<div ng-show="form.email.$error.required">
+						Hey es un numero.
+					</div>
+				</div>
+			</div>
+				
+
+			<div class="row">
+				<input id="camp2" type="number" name="numero" class="form-control col-md-3" placeholder="numero" aria-describedby="basic-addon2" ng-model="obj.numero" required>
+				<div ng-show="form.$submitted || form.numero.$touched">
+					<div ng-show="form.numero.$error.required">
+						Hey es un numero.
+					</div>
+				</div>
+			</div>
+			<button ng-click="enviar()">Enviar</button>
+		</form>
+	</article>
+
+	<aside class="col-md-3 ">
+		dsafdaskhlfjklads
+	</aside>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

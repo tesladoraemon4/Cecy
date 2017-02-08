@@ -1,0 +1,28 @@
+<!--
+	CREA UN MAPA CON EL CUAL SE PUEDEN BUSCAR DIFERENTES PUNTOS DE INTERES EN 
+	DIVERSOS LUGARES
+-->
+
+{{hola}}
+<div class="row">
+	<div id="mapContainer" style="width: 600px; height: 400px"></div>
+	<div id="panel" style="position:absolute; width:49%; left:51%; height:100%; background:inherit" ></div>
+
+</div>
+
+<div class="row">
+	<div class="form-group">
+		<label for="categoria">Seleccione la categoria a consultar</label><br>
+		<select name="" id="categoria" class="form-control" ng-model="cat" ng-change="anadir()">
+			<option ng-repeat="categoria in categorias" >{{categoria}}</option>
+		</select><br>
+		<button ng-click="eliminarBurbujas()" class="btn btn-primary">borrar burbuja</button>
+	</div>
+	<div class="form-goup">
+		<div ng-repeat="consul in consultados track by $index">
+			<h3>{{consul}}</h3><br>
+			<button ng-click="quitarMarcadores(consul)" class="btn btn-primary">borrar</button>
+		</div>
+	</div>
+</div>
+

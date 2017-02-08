@@ -1,0 +1,144 @@
+
+.table th{
+    background-color: #4CAF50;
+    border-bottom: 1px solid #ddd;
+    color: white;
+
+}
+
+.table td{
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+}
+
+.table .action-column{
+    width: 230px;
+}
+.table .action-column:hover{
+    text-decoration: none;
+    cursor: default;
+}
+.table tfoot .pagination{
+    float: right;
+    margin: 0;
+}
+.table tfoot .pagination li{
+    cursor: pointer;
+}
+.table tfoot select{
+    width: 90px;
+    float: right;
+    margin-right: 8px;
+}
+
+.colorError{
+  background-color: red;
+}
+
+
+img{
+  width: 300px;
+  height: 300px;
+  align-self: center;
+}
+
+
+@font-face{
+  font-family: 'minecraft';
+  src:url('../templates/images/Minecrafter.Reg.ttf');
+}
+.tipografia{
+  text-align: center;
+  font-family: minecraft;
+}
+
+a.tipografia{
+  text-align: center;
+}
+
+
+.contenido.ng-enter{/*cuando entra a la animacion*/
+	animation: my_fade_animation_init 0.5s linear;
+	-webkit-animation: my_fade_animation_init 0.5s linear;
+}
+
+
+
+
+
+.contenido.ng-leave { /*cuando se sale de la animacion*/
+  animation: my_fade_animation 0.5s linear;
+  -webkit-animation: my_fade_animation 0.5s linear;
+}
+
+@keyframes my_fade_animation_init {
+  from { 
+  	opacity:0; 
+  }
+  to { 
+  	opacity:1; 
+  }
+}
+
+
+@keyframes my_fade_animation {
+  from { opacity:1; }
+  to { opacity:0; }
+}
+
+@-webkit-keyframes my_fade_animation {
+  from { opacity:1; }
+  to { opacity:0; }
+}
+
+
+
+
+
+header, .color1{
+	background-color:#7BC342;
+}
+
+
+article, .color2{
+	background-color: #BDC3C6;
+}
+
+
+footer, .color3{
+	background-color: #006594;
+}
+
+
+aside, .color4{
+	background-color: #6B7552;
+}
+
+/*
+		Estilo 1
+
+header{
+	background-color:#4A6D18;
+}
+
+
+article{
+	background-color: #FFFFFF;
+}
+
+
+footer{
+	background-color: #524D4A;
+}
+
+
+aside{
+	background-color: #6B7552;
+}
+
+
+*/
+
+
+
+
