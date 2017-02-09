@@ -7,7 +7,7 @@
 
 angular.module('hereMapa', ['ngGeolocation'])
 .component('mapaItinerario',{
-	templateUrl:'map/mapaItinerario.html',
+	templateUrl:'map/itinerario/mapaItinerario.html',
 	controller : function($scope,mapaProvider,positioning,$http,$timeout,$log,$geolocation){
 		$scope.sugerencias=[];
 		$scope.results = [];
@@ -15,19 +15,16 @@ angular.module('hereMapa', ['ngGeolocation'])
 		// Autocompletado Busqueda 
 		var timer = null;
 		mapaProvider.cargarMapa();
-		positioning.map.setCenter({lat:19.432608,lng:-99.133208});
-		positioning.map.setZoom(10);
 		
 		//sacar geolocalizacion*******************************
 		//inicializo la geolocalizacion
-		
 		$geolocation.watchPosition({
 		           enableHighAccuracy: true
 		       });
 		//inicializamos el mapa en las coordenadas iniciales
 		setTimeout(function () {
 			//$log.log("inicializando geolocalizacion");
-			if(typeof($geolocation.position) === "undefined" ){
+			if(typeof($geolocation.position) != "undefined" ){
 				var coor = 
 				{lat:$geolocation.position.coords.latitude,
 				lng:$geolocation.position.coords.longitude}
@@ -37,7 +34,7 @@ angular.module('hereMapa', ['ngGeolocation'])
 			}else{
 				positioning.moveMapToMexico();
 			}
-		},1500);
+		},3000);
 
 		
 		//refrescamos las coordenadas cada x tiempo
@@ -48,11 +45,11 @@ angular.module('hereMapa', ['ngGeolocation'])
 			lng:$geolocation.position.coords.longitude}
 			$scope.coordsUser=positioning.coords = mapaProvider.coordUser = coor;
 			$geolocation.clearWatch();
-		},1500);
+		},3500);
 		
 		setInterval(function () {
 			positioning.refreshMapMarker(mapaProvider.map);
-		},2500);
+		},3500);
 
 		
 		//sacargeolocalizacion*********************************************

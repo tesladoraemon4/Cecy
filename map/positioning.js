@@ -5,6 +5,8 @@
 * Obtiene las coordenadas geograficas del usuario que ingreso a la aplicacion y actualiza el marcador del usuario
 * Para empezar a usarla debes de fijar el mapa 
 */
+import{map,ui};
+
 angular.module('hereMapa')
 .factory('positioning', function ($window,$log,$geolocation) {
 	var positioning = {};

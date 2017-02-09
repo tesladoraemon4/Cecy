@@ -54,6 +54,7 @@
                                     delete retVal.position.timestamp;
                                     $rootScope.$broadcast('$geolocation.position.error', error);
                                 });
+                                $window.navigator.geolocation.clearWatch(this.watchId);
                             }, options);
                     }
                 } else {

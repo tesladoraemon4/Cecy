@@ -1,3 +1,3 @@
 'use strict';
 
-angular.module('pagina',['hereMapa']);
+angular.module('pagina',['hereMapa','ngGeolocation']);

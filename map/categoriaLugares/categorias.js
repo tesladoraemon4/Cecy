@@ -5,7 +5,7 @@
 * Traduce las categorias de lugares a buscar 
 */
 angular.module('hereMapa')
-.factory('categoriasPlaces', function ($log) {
+.factory('categorias', function ($log) {
 	
 	var categoriasPlaces = {};
 	categoriasPlaces.traslateEspanolIngles = function (palabra) {

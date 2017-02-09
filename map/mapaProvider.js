@@ -7,6 +7,8 @@
 */
 var map;
 var ui;
+export map;
+export ui;
 angular.module('hereMapa')
 .factory('mapaProvider',function ($http,$log,$timeout,positioning,$geolocation) {
   
@@ -132,6 +134,18 @@ angular.module('hereMapa')
     $http.get(url)
     .then(function(data){
       var items = data.data.results.items;
+      var objJson = {
+        rutaRequestParams:{
+          language:'es-es',
+          departure:'now',
+          representation: 'display',
+          routeattributes : 'waypoints,summary,shape,legs',
+          maneuverattributes: 'direction,action'
+        },
+        mode_scope:1
+      }
+
+
       $log.info("consultando datos marcadores ...");
       for (var i = items.length - 1; i >= 0; i--) {//agregando caracteristicas a los marcadores
         
@@ -142,25 +156,11 @@ angular.module('hereMapa')
         var marcador = new H.map.Marker({ lat:coords.lat, lng:coords.long},
         { icon: icon });
 
-        items[i].distance;
-        items[i].vicinity;
 
-        var objJson = {
-          rutaRequestParams = {
-            language:'es-es',
-            departure:'now',
-            mode: transport,
-            representation: 'display',
-            routeattributes : 'waypoints,summary,shape,legs',
-            maneuverattributes: 'direction,action',
-            waypoint0: coordUser.lat+","+coordUser.lng,
-            waypoint1: lat+","+long  
-          },
-          mode_scope:1//modo donde se va a hacer la ruta 1 single route 2 varias rutas
-        }
+        objJson.rutaRequestParams.waypoint0=coordUser.lat+","+coordUser.lng;
+        objJson.rutaRequestParams.waypoint1=lat+","+long;
+        objJson.distancia=items[i].distance;
 
-
-        marcarRuta(lat,long,coordUser,id);
         var html = 
         "<div id='contenedorBubble"+items[i].distance+"'>"+
 			"<h5>"+items[i].title+"<small>"+items[i].distance+"</small></h5>"+
@@ -168,15 +168,10 @@ angular.module('hereMapa')
 			"<input checked name='transporte' value='fastest;publicTransport' type='radio' id='radio1'>Trasporte publico<br>"+
 			"<input name='transporte' value='fastest;car' type='radio' id='radio2'>Coche<br>"+
 			"<input name='transporte' value='shortest;pedestrian' type='radio' id='radio3'>A pie<br>"+
-			"<button type='button' onClick='marcarRuta("+items[i].position[0]+","+items[i].position[1]+","
-          +JSON.stringify(mapaProvider.coordUser)+","+items[i].distance+")'>IR</button>"+
+			"<button type='button' onClick='marcarRuta("+JSON.stringify(objJson)+")'>IR</button>"+
 		"</div>";
 
-		/*
-          '<div ><h5>'+items[i].title+'</h5></div>'+"<div>Direccion: "+items[i].vicinity+"</div>"
-          +"<div><button onclick='marcarRuta("+items[i].position[0]+","+items[i].position[1]+","
-          +JSON.stringify(mapaProvider.coordUser)+")'>IR</button></div>";
-		*/
+
 
         marcador.setData(html);
         marcador.categoria=categoria;
@@ -268,12 +263,17 @@ function eliminarRutas() {
 
 var rutaInstructionsContainer=null;
 //marca la ruta de varios puntos 
-function marcarRuta(lat,long,coordUser,id) {
+function marcarRuta(configObj) {
 
-	if(hayRutas)
-		eliminarRutas();
-	hayRutas=true;
-	var transport = getTransport(id);
+  if(configObj.mode_scope==1){
+    if(hayRutas)
+      eliminarRutas();
+    hayRutas=true;
+    var transport = getTransport(id);
+    configObj.rutaRequestParams.mode=mode;
+  }
+
+
 
 
 	//configurando la plataforma
@@ -285,16 +285,7 @@ function marcarRuta(lat,long,coordUser,id) {
 		useHTTPS: true
 	});
 	var rutar = platform.getRoutingService(),
-	  rutaRequestParams = {
-	  	language:'es-es',
-	  	departure:'now',
-	    mode: transport,
-	    representation: 'display',
-	    routeattributes : 'waypoints,summary,shape,legs',
-	    maneuverattributes: 'direction,action',
-	    waypoint0: coordUser.lat+","+coordUser.lng, // Brandenburg Gate
-	    waypoint1: lat+","+long  // Friedrichstraße Railway Station
-	  };
+	rutaRequestParams = configObj.rutaRequestParams;
 	rutar.calculateRoute(
 	  rutaRequestParams,
 	  onSuccess,
