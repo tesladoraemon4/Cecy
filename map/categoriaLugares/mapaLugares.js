@@ -13,9 +13,7 @@ angular.module('hereMapa',['ngGeolocation'])
 		$scope.coordsUser = {};
 		mapaProvider.cargarMapa();
 		//sacar geolocalizacion*****************************************************************+
-
-
-		//inicializo la geolocalizacion
+		//no obtiene la geolocalizacion
 		$geolocation.getCurrentPosition({
 		           enableHighAccuracy: true
 		       });
@@ -45,7 +43,12 @@ angular.module('hereMapa',['ngGeolocation'])
 		},3500);
 		
 		setInterval(function () {
-			positioning.refreshMapMarker(mapaProvider.map);
+			if(typeof($geolocation.position.coords) != "undefined" ){
+				positioning.refreshMapMarker(mapaProvider.map);
+			}else{
+				positioning.moveMapToMexico();
+			}
+
 		},3500);
 
 		
