@@ -7,9 +7,8 @@
 */
 var map;
 var ui;
-angular.module('hereMapa')
+angular.module('hereMapa',[])
 .factory('mapaProvider',function ($http,$log,$timeout,positioning,$geolocation) {
-  
   var mapaProvider={};
   mapaProvider.coords = {};
   mapaProvider.coordUser = {};
@@ -146,21 +145,19 @@ angular.module('hereMapa')
         items[i].vicinity;
 
         var objJson = {
-          rutaRequestParams = {
+          rutaRequestParams:{
             language:'es-es',
             departure:'now',
             mode: transport,
             representation: 'display',
             routeattributes : 'waypoints,summary,shape,legs',
             maneuverattributes: 'direction,action',
-            waypoint0: coordUser.lat+","+coordUser.lng,
-            waypoint1: lat+","+long  
+            waypoint0: JSON.stringify(mapaProvider.coordUser).lat+","+JSON.stringify(mapaProvider.coordUser).lng,
+            waypoint1: items[i].position[0]+","+items[i].position[1]  
           },
-          mode_scope:1//modo donde se va a hacer la ruta 1 single route 2 varias rutas
+          mode_scope:1,//modo donde se va a hacer la ruta 1 single route 2 varias rutas,
+          distancia:items[i].distance
         }
-
-
-        marcarRuta(lat,long,coordUser,id);
         var html = 
         "<div id='contenedorBubble"+items[i].distance+"'>"+
 			"<h5>"+items[i].title+"<small>"+items[i].distance+"</small></h5>"+
@@ -168,8 +165,7 @@ angular.module('hereMapa')
 			"<input checked name='transporte' value='fastest;publicTransport' type='radio' id='radio1'>Trasporte publico<br>"+
 			"<input name='transporte' value='fastest;car' type='radio' id='radio2'>Coche<br>"+
 			"<input name='transporte' value='shortest;pedestrian' type='radio' id='radio3'>A pie<br>"+
-			"<button type='button' onClick='marcarRuta("+items[i].position[0]+","+items[i].position[1]+","
-          +JSON.stringify(mapaProvider.coordUser)+","+items[i].distance+")'>IR</button>"+
+			"<button type='button' onClick='marcarRuta("+JSON.stringify(objJson)+")'>IR</button>"+
 		"</div>";
 
 		/*
@@ -268,12 +264,18 @@ function eliminarRutas() {
 
 var rutaInstructionsContainer=null;
 //marca la ruta de varios puntos 
-function marcarRuta(lat,long,coordUser,id) {
+function marcarRuta(configure) {
+  //para eliminar rutas en el mapa dependiendo del scope
+	
+  if(configure.mode_scope==1){
+    if(hayRutas)
+  		eliminarRutas();
+  	hayRutas=true;
+  	var transport = getTransport(id);
+  }
 
-	if(hayRutas)
-		eliminarRutas();
-	hayRutas=true;
-	var transport = getTransport(id);
+
+
 
 
 	//configurando la plataforma
@@ -285,16 +287,7 @@ function marcarRuta(lat,long,coordUser,id) {
 		useHTTPS: true
 	});
 	var rutar = platform.getRoutingService(),
-	  rutaRequestParams = {
-	  	language:'es-es',
-	  	departure:'now',
-	    mode: transport,
-	    representation: 'display',
-	    routeattributes : 'waypoints,summary,shape,legs',
-	    maneuverattributes: 'direction,action',
-	    waypoint0: coordUser.lat+","+coordUser.lng, // Brandenburg Gate
-	    waypoint1: lat+","+long  // Friedrichstraße Railway Station
-	  };
+	  rutaRequestParams = configure.rutaRequestParams;
 	rutar.calculateRoute(
 	  rutaRequestParams,
 	  onSuccess,

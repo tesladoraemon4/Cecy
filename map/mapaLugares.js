@@ -5,7 +5,7 @@
 * Es el nùcleo del componente mapa lugares
 */
 angular.module('hereMapa',[])
-.component('mapaHere',{
+.component('mapaLugares',{
 	templateUrl:'map/mapaPlaces.html',
 	controller : function(categoriasPlaces,mapaProvider,$scope,$log){
 		$scope.categorias = [];
