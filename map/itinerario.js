@@ -10,46 +10,51 @@ angular.module('hereMapa', ['ngGeolocation'])
 	templateUrl:'map/mapaItinerario.html',
 	controller : function($scope,mapaProvider,positioning,$http,$timeout,$log,$geolocation){
 		$scope.sugerencias=[];
-		/*****************************************************************/
-		//Modulo de sugerencias
-		/******************************************************************/
 		$scope.results = [];
 		$scope.cargando = false;
 		// Autocompletado Busqueda 
 		var timer = null;
 		mapaProvider.cargarMapa();
+		positioning.map.setCenter({lat:19.432608,lng:-99.133208});
+		positioning.map.setZoom(10);
 		
 		//sacar geolocalizacion*******************************
 		//inicializo la geolocalizacion
+		
 		$geolocation.watchPosition({
 		           enableHighAccuracy: true
 		       });
 		//inicializamos el mapa en las coordenadas iniciales
 		setTimeout(function () {
-			$log.log("inicializando geolocalizacion");
-			var coor = 
-			{lat:$geolocation.position.coords.latitude,
-			lng:$geolocation.position.coords.longitude}
-			$log.log(coor);
-			$scope.coordsUser=positioning.coords = mapaProvider.coordUser = coor;
-			positioning.moveMap();
-		},1450);
+			//$log.log("inicializando geolocalizacion");
+			if(typeof($geolocation.position) === "undefined" ){
+				var coor = 
+				{lat:$geolocation.position.coords.latitude,
+				lng:$geolocation.position.coords.longitude}
+				//$log.log(coor);
+				$scope.coordsUser=positioning.coords = mapaProvider.coordUser = coor;
+				positioning.moveMap();
+			}else{
+				positioning.moveMapToMexico();
+			}
+		},1500);
 
 		
 		//refrescamos las coordenadas cada x tiempo
 		setInterval(function () {
-			$log.log("Refrescando coordenadas");
+			//$log.log("Refrescando coordenadas");
 			var coor = 
 			{lat:$geolocation.position.coords.latitude,
 			lng:$geolocation.position.coords.longitude}
 			$scope.coordsUser=positioning.coords = mapaProvider.coordUser = coor;
+			$geolocation.clearWatch();
 		},1500);
 		
 		setInterval(function () {
 			positioning.refreshMapMarker(mapaProvider.map);
-		},1500);
+		},2500);
 
-
+		
 		//sacargeolocalizacion*********************************************
 		
 
@@ -62,17 +67,6 @@ angular.module('hereMapa', ['ngGeolocation'])
 			},1000);
 
 		}
-		/*
-		METODO PARA GENERAR UN MAPA Y GEOLOCALIZAR
-		navigator.geolocation.getCurrentPosition(mapaProvider.mapaHubicame,
-		function (errorCallback) {
-			console.log("Algo se chingo");
-		});
-		mapaProvider.lugares();
-		
-		//queryCoordinates.getCordenadasLugares();
-		*/
-
 		$scope.buscar = function(val){
 		  if(timer) $timeout.cancel(timer);
 		  timer = $timeout(exc, 800); //800 milisegundos de retardo
@@ -84,15 +78,11 @@ angular.module('hereMapa', ['ngGeolocation'])
 		$scope.getSugerencias = function (searchtext) {
 			$scope.cargando=true;
 			searchtext=searchtext.split(' ').join('%20');
-			var url = "https://places.demo.api.here.com/places/v1/suggest?"+
-			"at="+$scope.coordsUser.lat+","+$scope.coordsUser.lng+"&"+
-			"q='"+searchtext+"'&app_id=EJiiwcESc8a3fX3YDAhK&app_code=lbdJ16arthEPwrA7nhmluA";
-
-			url = "http://autocomplete.geocoder.cit.api.here.com/6.2/suggest.json"+
-				  "?app_id=EJiiwcESc8a3fX3YDAhK"+
-				  "&app_code=lbdJ16arthEPwrA7nhmluA"+
-				  "&at="+$scope.coordsUser.lat+","+$scope.coordsUser.lng+"&"+
-				  "&query='"+searchtext+"'";
+			var url = "http://autocomplete.geocoder.cit.api.here.com/6.2/suggest.json"+
+			"?app_id=EJiiwcESc8a3fX3YDAhK"+
+			"&app_code=lbdJ16arthEPwrA7nhmluA"+
+			"&at="+$scope.coordsUser.lat+","+$scope.coordsUser.lng+"&"+
+			"&query='"+searchtext+"'";
 
 
 			$log.log(url);
@@ -111,11 +101,8 @@ angular.module('hereMapa', ['ngGeolocation'])
 		}
 		$scope.peticionEvt =function () {//sacar los datos despues de 2 segundos
 			//buscamos si el texto salio de las sugerencias o fue escrito por el usuario
-
 			var elemento = mapaProvider.map.clearContent();
 			console.log(elemento);
-
-
 			$scope.isId=false;
 			var id;
 			for (var i=0;i<$scope.sugerencias.length;i++) 
@@ -132,14 +119,6 @@ angular.module('hereMapa', ['ngGeolocation'])
 			}, 100*6);
 		}
 
-
-
-		$scope.esEnter = function (e) {
-		  tecla = (document.all) ? e.keyCode : e.which;
-
-		  if (tecla==13) peticionesSug($scope.textoBusqueda);
-
-		}
 		$scope.anadirAgenda = function (elemento) {
 			sessionStorage.setItem("Agenda",elemento.value);
 		}
@@ -150,6 +129,8 @@ angular.module('hereMapa', ['ngGeolocation'])
 			$http.get(url)
 			.then(function (data) {
 				//array de lugares que coinciden 
+				$log.info("peticiones ");
+				$log.info(data);
 				var response = data.data.Response.View;
 				$scope.lugares = (response.length==0)?response.Result:response[0].Result;
 			},function (error) {
@@ -171,13 +152,11 @@ angular.module('hereMapa', ['ngGeolocation'])
 			$http.get(url)
 			.then(function (data) {
 				//array de lugares que coinciden 
-				$log.log(data);
+				$log.info("peticiones sug");
+				
+				$log.info(data);
 				var response = data.data.response.view[0].result;
 				$scope.lugares = response;
-
-
-
-
 			},function (error) {
 				$log.error("Error peticion");
 				$log.error(error);

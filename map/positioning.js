@@ -30,8 +30,8 @@ angular.module('hereMapa')
 		var coor = 
 		{lat:$geolocation.position.coords.latitude,
 		lng:$geolocation.position.coords.longitude};
-		$log.log("refresca el mapa");
-		$log.log($geolocation);
+		//$log.log("refresca el mapa");
+		//$log.log($geolocation);
 		if(markerObject==null){
 			markerObject = new H.map.Marker(coor);
 			markerObject.type=3;
@@ -47,9 +47,9 @@ angular.module('hereMapa')
 
 		//$log.log("refreshMapMarker end");
 	}
-	function moveMapToMexico() {
-    	positioning.map.setCenter({lat:23,lng:102});
-    	positioning.map.setZoom(3);
+	positioning.moveMapToMexico = function() {
+    	positioning.map.setCenter({lat:19.432608,lng:-99.133208});
+    	positioning.map.setZoom(10);
 	}
 	function positionError(error) {
 	    switch(error.code) {

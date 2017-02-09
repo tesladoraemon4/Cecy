@@ -145,6 +145,22 @@ angular.module('hereMapa')
         items[i].distance;
         items[i].vicinity;
 
+        var objJson = {
+          rutaRequestParams = {
+            language:'es-es',
+            departure:'now',
+            mode: transport,
+            representation: 'display',
+            routeattributes : 'waypoints,summary,shape,legs',
+            maneuverattributes: 'direction,action',
+            waypoint0: coordUser.lat+","+coordUser.lng,
+            waypoint1: lat+","+long  
+          },
+          mode_scope:1//modo donde se va a hacer la ruta 1 single route 2 varias rutas
+        }
+
+
+        marcarRuta(lat,long,coordUser,id);
         var html = 
         "<div id='contenedorBubble"+items[i].distance+"'>"+
 			"<h5>"+items[i].title+"<small>"+items[i].distance+"</small></h5>"+
@@ -251,11 +267,11 @@ function eliminarRutas() {
 }
 
 var rutaInstructionsContainer=null;
+//marca la ruta de varios puntos 
 function marcarRuta(lat,long,coordUser,id) {
 
 	if(hayRutas)
 		eliminarRutas();
-
 	hayRutas=true;
 	var transport = getTransport(id);
 

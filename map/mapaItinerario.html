@@ -29,9 +29,11 @@
 		Direcciones: <br>
 		<div ng-if="isId">
 			{{lugar.location.address}} <div class="btn btn-primary" ng-click="anadirAgenda(this)">Añadir Agenda</div>
+			<div class="btn btn-primary" ng-click="irLugar()">Ir</div>
 		</div>
 		<div ng-if="!isId">
 			{{lugar.Location}} <div class="btn btn-primary" ng-value="{{lugar.Location.Address}}" ng-click="anadirAgenda(this)">Añadir Agenda</div>
+			<div class="btn btn-primary" ng-click="irLugar()">Ir</div>
 		</div>
 
 	</div>
