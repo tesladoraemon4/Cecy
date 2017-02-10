@@ -54,6 +54,9 @@
                                     delete retVal.position.timestamp;
                                     $rootScope.$broadcast('$geolocation.position.error', error);
                                 });
+
+
+                                
                             }, options);
                     }
                 } else {

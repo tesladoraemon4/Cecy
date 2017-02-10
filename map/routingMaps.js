@@ -9,21 +9,32 @@ angular.module('hereMapa')
 	var routing={};
 	var ui=mapaProvider.ui;
 	var map=mapaProvider.map;
+	routing.marcarRuta = marcarRuta;
+	routing.onSucces = onSuccess;
+	routing.onError =onError;
+	routing.getTransport =getTransport;
+	routing.eliminarRutas =eliminarRutas;
+	routing.openBubble =openBubble;
+	routing.marcarRutaAlMapa =marcarRutaAlMapa;
+	routing.AgregarManiobrasAlMapa =AgregarManiobrasAlMapa;
+	routing.AgregarCurvasAlMapa =AgregarCurvasAlMapa;
+	routing.AgregarInstruccionesAlPanel =AgregarInstruccionesAlPanel;
+	routing.AgregarResumenAlPanel =AgregarResumenAlPanel;
+	return routing;
+});
+
 
 	//marca la ruta de varios puntos 
-	routing.marcarRuta =function(configObj) {
+	var marcarRuta =function(configObj) {
 	  if(configObj.mode_scope==1){
 	    if(hayRutas)
 	      eliminarRutas();
 	    hayRutas=true;
 	  }else{
 	  	var transport = getTransport(configObj.id);
-	    configObj.rutaRequestParams.mode=mode;
+	    configObj.rutaRequestParams.mode=transport;
 	  	
 	  }
-
-
-
 		//configurando la plataforma
 		rutaInstructionsContainer = document.getElementById('panel');
 		var platform = new H.service.Platform({
@@ -40,7 +51,9 @@ angular.module('hereMapa')
 		  onError
 		);
 	}
-	function onSuccess(result) {
+
+
+	var onSuccess=function (result) {
 
 		console.log(result);
 		var ruta = result.response.route[0];
@@ -52,15 +65,18 @@ angular.module('hereMapa')
 		
 	}
 
-	function onError(error) {
+	var onError=function (error) {
 	  alert('Algo fallo');
 	}
 
-	function getTransport(id) {
+	var getTransport=function (id) {
 		//Obtenemos los contenidos
-		var div = $document.getElementById('contenedorBubble'+id),
-		arrayTrans=div.getElementsByTagName('input'),
-		i;
+		var div = document.getElementById('contenedorBubble'+id);
+
+		console.log(div);
+
+		arrayTrans=div.getElementsByTagName('input');
+		var i;
 		for (i = arrayTrans.length - 1; i >= 0; i--)
 			if(arrayTrans[i].checked)
 				break;
@@ -69,7 +85,7 @@ angular.module('hereMapa')
 	}
 	var hayRutas=false;
 
-	function eliminarRutas() {
+	var eliminarRutas=function () {
 		var array = map.getObjects();
 		console.log("eliminando rutas...............");
 		for (var i = array.length - 1; i >= 0; i--)
@@ -84,7 +100,7 @@ angular.module('hereMapa')
 
 	var bubble;
 
-	function openBubble(position, text){
+	var openBubble=function (position, text){
 	 if(!bubble){
 	    bubble =  new H.ui.InfoBubble(
 	      position,
@@ -101,7 +117,7 @@ angular.module('hereMapa')
 	/*
 		Anades las rutas y las formas al mapa
 	*/
-	function marcarRutaAlMapa(ruta){
+	var marcarRutaAlMapa=function (ruta){
 		console.log("anadiendo lineas al mapa.....");
 		var strip = new H.geo.Strip(),
 	  	rutaShape = ruta.shape,
@@ -128,7 +144,7 @@ angular.module('hereMapa')
 	/*
 		Agregas maniobras al mapa
 	*/
-	function AgregarManiobrasAlMapa(ruta){
+	var AgregarManiobrasAlMapa=function (ruta){
 		console.log("Anadiendo maniobras al mapa....");
 		var icon = '<svg width="18" height="18" ' +
 		'xmlns="http://www.w3.org/2000/svg">' +
@@ -165,7 +181,7 @@ angular.module('hereMapa')
 	}
 
 	//agregas curvas al mapa
-	function AgregarCurvasAlMapa(waypoints){
+	var AgregarCurvasAlMapa=function (waypoints){
 		var nodeH3 = document.createElement('h3'),
 		waypointLabels = [],
 		i;
@@ -175,7 +191,7 @@ angular.module('hereMapa')
 		rutaInstructionsContainer.innerHTML = '';
 		rutaInstructionsContainer.appendChild(nodeH3);
 	}
-	function AgregarResumenAlPanel(resumen){
+	var AgregarResumenAlPanel=function (resumen){
 		console.log(resumen);
 		var summaryDiv = document.createElement('div'),content = '';
 		content += '<b>Distancia</b>: ' + resumen.distance  + 'm. <br/>';
@@ -190,7 +206,7 @@ angular.module('hereMapa')
 		
 	}
 
-	function AgregarInstruccionesAlPanel(ruta){
+	var AgregarInstruccionesAlPanel=function (ruta){
 		console.log(ruta);
 		var nodeOL = document.createElement('ol'),i,j;
 
@@ -223,14 +239,3 @@ angular.module('hereMapa')
 	Number.prototype.toMMSS = function () {
 	  return  Math.floor(this / 60)  +' minutes '+ (this % 60)  + ' seconds.';
 	}
-
-
-
-
-
-
-
-
-	return routing;
-});
-

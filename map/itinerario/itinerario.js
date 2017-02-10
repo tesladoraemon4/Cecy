@@ -17,7 +17,7 @@ angular.module('hereMapa', ['ngGeolocation'])
 		mapaProvider.cargarMapa();
 		
 		//sacar geolocalizacion*******************************
-		/*
+		
 		//inicializo la geolocalizacion
 		$geolocation.watchPosition({
 		           enableHighAccuracy: true
@@ -25,34 +25,48 @@ angular.module('hereMapa', ['ngGeolocation'])
 		//inicializamos el mapa en las coordenadas iniciales
 		setTimeout(function () {
 			//$log.log("inicializando geolocalizacion");
-			if(typeof($geolocation.position.coords) != "undefined" ){
+			if(typeof($geolocation.position.coords) != "undefined" ){ 
+				$log.log("inicializando cordenadas .....");
+				$log.log($geolocation);
 				var coor = 
 				{lat:$geolocation.position.coords.latitude,
 				lng:$geolocation.position.coords.longitude}
 				//$log.log(coor);
 				$scope.coordsUser=positioning.coords = mapaProvider.coordUser = coor;
 				positioning.moveMap();
+				$log.log("coordenadas inicializandas");
+			}if(typeof($geolocation.position.error) != "undefined" ){
+				var error = $geolocation.position.error;
+				alert("Ocurrio un error "+error.message);
+			    cancelarRefresh();
 			}else{
+				$log.log("Ocurrio algun otro error ");
+				$log.log($geolocation);
 				positioning.moveMapToMexico();
+				cancelarRefresh();
 			}
 		},3000);
 
 		
 		//refrescamos las coordenadas cada x tiempo
-		setInterval(function () {
+		var  refrescarCoords= setInterval(function () {
 			//$log.log("Refrescando coordenadas");
 			var coor = 
 			{lat:$geolocation.position.coords.latitude,
 			lng:$geolocation.position.coords.longitude}
 			$scope.coordsUser=positioning.coords = mapaProvider.coordUser = coor;
-			$geolocation.clearWatch();
 		},3500);
 		
-		setInterval(function () {
+		var  refrescarMarker= setInterval(function () {
 			positioning.refreshMapMarker(mapaProvider.map);
 		},3500);
 
-		*/
+
+		var cancelarRefresh =function () {
+			clearTimeout(refrescarCoords);
+			clearTimeout(refrescarMarker);
+		}
+		
 		//sacargeolocalizacion*********************************************
 		
 		function configurarMapa(coords) {
@@ -93,7 +107,6 @@ angular.module('hereMapa', ['ngGeolocation'])
 			//var icon = new H.map.Icon(iconUrl);
 			var marcador = new H.map.Marker(coordsO/*,
 			{ icon: icon }*/);
-
 			var html = 
 			"<div id='contenedorBubble"+objJson.id+"'>"+
 			"<h5><small></small></h5>"+
@@ -112,12 +125,12 @@ angular.module('hereMapa', ['ngGeolocation'])
 			    content: evt.target.getData()
 			  });
 			  var control = new H.ui.Control();
-			  mapaProvider.ui.addBubble(bubble);
+			  mapaProvider.ui.addBubble(bubble); 
 			}, false);
 
-			$log.info("configurando marcador ANADIENDO OBJETO");
 
 			mapaProvider.map.addObject(marcador);
+
 			var zIndex=1;
 			mapaProvider.map.addEventListener('tap', function (evt) {
 				if (evt.target instanceof mapsjs.map.Marker) {
@@ -126,13 +139,16 @@ angular.module('hereMapa', ['ngGeolocation'])
 			}); 
 			$log.info("configurando marcador TERMINADO");
 		}
+
+
 		//mover la camara del mapa a la posicion indicada 
 		$scope.irLugar = function (element) {
+			//configurar el mapa 
 			var coords = getCoordenadas(element);
 			configurarMapa(coords);
-			var objJson = configurarJsonRuta({lat:19.432608,lng:-99.133208},coords);
+			var objJson = configurarJsonRuta($scope.coordsUser,coords);
+			//entra el configurarMarcador(icono {canvas,imagen,})
 			configurarMarcador("map/manzana.png",coords,objJson);
-			routingMaps.marcarRuta(objJson);
 
 
 		}

@@ -27,13 +27,13 @@ angular.module('hereMapa')
 	
 	//refresca la vista del mapa 
 	positioning.refreshMapMarker = function (map) {
-		//$log.log("refreshMapMarker .....");
+		$log.log("refreshMapMarker .....");
 		$log.log($geolocation);
 		var coor = 
 		{lat:$geolocation.position.coords.latitude,
 		lng:$geolocation.position.coords.longitude};
-		//$log.log("refresca el mapa");
-		//$log.log($geolocation);
+		$log.log("refresca el mapa");
+		$log.log($geolocation);
 		if(markerObject==null){
 			markerObject = new H.map.Marker(coor);
 			markerObject.type=3;
@@ -47,7 +47,7 @@ angular.module('hereMapa')
 			map.addObject(markerObject);
 		}
 
-		//$log.log("refreshMapMarker end");
+		$log.log("refreshMapMarker end");
 	}
 	positioning.moveMapToMexico = function() {
     	positioning.map.setCenter({lat:19.432608,lng:-99.133208});

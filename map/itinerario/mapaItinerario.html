@@ -4,6 +4,8 @@
 
 <div class="row">	
 	<div id="mapContainer" style="width: 600px; height: 400px"></div>
+	<!--panel donde muestras las instrucciones de como llegar a x lugar-->
+	<div id="panel" style="position:absolute; width:49%; left:51%; height:100%; background:inherit" ></div>
 </div>
 <div class="row">
 
@@ -17,12 +19,7 @@
 				list="sug" class="form-control"  id="1"> 
 
 				<span ng-show="cargando">Cargando...</span>
-
-				<div ng-repeat="sugerencia in sugerencias">
-						{{sugerencia.label}} 
-				</div>
 	
-
 				<datalist id="sug">
 					<div ng-repeat="sugerencia in sugerencias">
 						<option value={{sugerencia.label}} label={{sugerencia.label}}></option>
@@ -32,18 +29,16 @@
 		</div>
 		<div class="btn btn-prymary" ng-click="buscarContenidos()">Buscar</div>	
 	</form>
-
-
 	<div class="" ng-repeat="lugar in lugares">
 		Direcciones: <br>
 		<div ng-if="isId">
-			con id
-			{{lugar}} <div class="btn btn-primary" ng-click="anadirItinerario(this)">Añadir Itinerario</div>
+			con id<br>
+			{{lugar}}  <br> <div class="btn btn-primary" ng-click="anadirItinerario(this)">Añadir Itinerario</div>
 			<div class="btn btn-primary" ng-click="irLugar(this)" value={{lugar.location.displayPosition}}>Ir</div>
 		</div>
 		<div ng-if="!isId">
-			sin id
-			{{lugar.Location}} <div class="btn btn-primary" ng-value="{{lugar.Location.Address}}" ng-click="anadirItinerario(this)">Añadir Itinerario</div>
+			sin id<br>
+			{{lugar.Location}} <br>  <div class="btn btn-primary" ng-value="{{lugar.Location.Address}}" ng-click="anadirItinerario(this)">Añadir Itinerario</div>
 			<div class="btn btn-primary" ng-click="irLugar(this)"  value={{lugar.Location.DisplayPosition}}>Ir</div>
 		</div>
 

@@ -1,3 +1,32 @@
+CAMBIAR VISTAS DEL MODULO itinerario
+Nombre del componente a llamar
+	                            <mapa-itinerario></mapa-itinerario>
+
+
+
+1.- cambiar icono de el resultado de la busqueda de un lugar
+	itinerario.js
+		irLugar
+			configurarMarcador(url_imagen,);
+
+2.- cambiar el cuadro de dialogo
+	itinerario.js
+		configurarMarcador
+			variable html (esta comentado lo que no puedes modificar)
+				en la parte de value necesitas el modo de transporte 
+					https://developer.here.com/rest-apis/documentation/routing/topics/resource-param-type-routing-mode.html
+
+3.- 
+
+
+
+
+
+
+
+
+
+
 
 
 objJSON = {
@@ -17,7 +46,22 @@ objJSON = {
 
 
 
-function marcarRuta(objJSON)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function marcarRuta(objJSON);
 
 
 
@@ -39,6 +83,7 @@ categoria de objetos añadidos al mapa es
 
 Funciones donde se manupulan objetos del mapa 
 itinerario.js (no añadieron categorias 9 feb)
+	
 	function configurarMarcador(iconUrl,coordsO,objJson)  //icon url lo tiene por defecto
 	configurarJsonRuta //solo he marcado el origen y el destino por que las localizaciones son dinamicas 
 
