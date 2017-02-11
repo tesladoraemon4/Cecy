@@ -16,9 +16,51 @@ Nombre del componente a llamar
 				en la parte de value necesitas el modo de transporte 
 					https://developer.here.com/rest-apis/documentation/routing/topics/resource-param-type-routing-mode.html
 
-3.- 
+3.- para cambiar el marcador con el cual se representara al usuario en el mapa
+	Entrara a 
+	positioning.js
+	y cambiar variable positioning.markerUser ="img url"
+4.- cambiar el boton de eliminar ruta en el globo de busqueda
+	routing maps.js
+	var eliminarRutaBtn
 
 
+QUE NECESITO PARA MANDAR A BUSCAR LAS RUTAS ES
+
+
+
+Lo que necesito con los lugares cecy 
+las coordenadas con que se van a consultar a la db
+el transporte que utilizara para ir de lugar1 a lugar2,
+ los transporetes que puede usar estan aca :
+https://developer.here.com/rest-apis/documentation/routing/topics/resource-param-type-routing-mode.html
+En la primera posicion del arreglo metes el primer elemento de la lista dragable y asi sucesivamente
+
+	[{
+		lugar1:lat+","+long,
+		lugar2:lat+","+long,
+		transporte:"transporte"
+	}]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+obj.ruta=10;//es para objetos de una sola 
 
 
 

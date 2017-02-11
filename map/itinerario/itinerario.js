@@ -23,6 +23,36 @@ angular.module('hereMapa', ['ngGeolocation'])
 		           enableHighAccuracy: true
 		       });
 		//inicializamos el mapa en las coordenadas iniciales
+		//mover la camara del mapa a la posicion indicada 
+		$scope.irLugar = function (element) {
+			//configurar el mapa 
+			var coords = getCoordenadas(element);
+			configurarMapa(coords);
+			var objJson = configurarJsonRuta($scope.coordsUser,coords);
+			//entra el configurarMarcador(icono {canvas,imagen,})
+			configurarMarcador("",coords,objJson);
+
+
+		}
+		function configurarJsonRuta(coordsO,coordsD) {
+			return {
+				rutaRequestParams :{
+					language:'es-es',
+					departure:'now',
+					mode: null,
+					representation: 'display',
+					routeattributes : 'waypoints,summary,shape,legs',
+					maneuverattributes: 'direction,action',
+					waypoint0: coordsO.lat+","+coordsO.lng, 
+					waypoint1: coordsD.lat+","+coordsD.lng 
+				},
+				mode_scope:2,//modo donde se va a hacer la ruta 1 single route 2 varias rutas,
+				distancia: null,
+				id:coordsO.lat*45
+			};
+		}
+
+
 		setTimeout(function () {
 			//$log.log("inicializando geolocalizacion");
 			if(typeof($geolocation.position.coords) != "undefined" ){ 
@@ -73,23 +103,7 @@ angular.module('hereMapa', ['ngGeolocation'])
 			mapaProvider.map.setCenter(coords);
 			mapaProvider.map.setZoom(8);
 		}
-		function configurarJsonRuta(coordsO,coordsD) {
-			return {
-				rutaRequestParams :{
-					language:'es-es',
-					departure:'now',
-					mode: null,
-					representation: 'display',
-					routeattributes : 'waypoints,summary,shape,legs',
-					maneuverattributes: 'direction,action',
-					waypoint0: coordsO.lat+","+coordsO.lng, 
-					waypoint1: coordsD.lat+","+coordsD.lng 
-				},
-				mode_scope:2,//modo donde se va a hacer la ruta 1 single route 2 varias rutas,
-				distancia: null,
-				id:coordsO.lat*45
-			};
-		}
+		
 		function getCoordenadas(element) {
 			return ($scope.isId)?
 			{
@@ -105,8 +119,8 @@ angular.module('hereMapa', ['ngGeolocation'])
 		function configurarMarcador(iconUrl,coordsO,objJson) {
 			$log.info("configurando marcador");
 			//var icon = new H.map.Icon(iconUrl);
-			var marcador = new H.map.Marker(coordsO/*,
-			{ icon: icon }*/);
+			var marcador = new H.map.Marker(coordsO,
+			{ icon: iconUrl });
 			var html = 
 			"<div id='contenedorBubble"+objJson.id+"'>"+
 			"<h5><small></small></h5>"+
@@ -117,7 +131,8 @@ angular.module('hereMapa', ['ngGeolocation'])
 			"<button type='button' onClick='marcarRuta("+JSON.stringify(objJson)+")'>IR</button>"+
 			"</div>";
 			marcador.setData(html);
-			marcador.ruta=0;
+			//se añade el id para poder eliminar mejor
+			marcador.ruta=objJson.id;
 
 			$log.info("configurando marcador ANADIENDO EVENTOS");
 			marcador.addEventListener('tap', function (evt) {
@@ -141,17 +156,7 @@ angular.module('hereMapa', ['ngGeolocation'])
 		}
 
 
-		//mover la camara del mapa a la posicion indicada 
-		$scope.irLugar = function (element) {
-			//configurar el mapa 
-			var coords = getCoordenadas(element);
-			configurarMapa(coords);
-			var objJson = configurarJsonRuta($scope.coordsUser,coords);
-			//entra el configurarMarcador(icono {canvas,imagen,})
-			configurarMarcador("map/manzana.png",coords,objJson);
-
-
-		}
+		
 
 
 

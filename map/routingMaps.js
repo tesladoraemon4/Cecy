@@ -4,33 +4,27 @@
 *
 * Description
 */
+var eliminarRutaBtn = "<br><button onClick='eliminarRutas(";
+var eliminarRutaBtn2=")' class='btn btn-primary'>EliminarRuta</button>";
 angular.module('hereMapa')
-.factory('routingMaps', function (mapaProvider,$log,$document) {
+.factory('routingMaps', function (mapaProvider) {
 	var routing={};
 	var ui=mapaProvider.ui;
 	var map=mapaProvider.map;
 	routing.marcarRuta = marcarRuta;
-	routing.onSucces = onSuccess;
-	routing.onError =onError;
-	routing.getTransport =getTransport;
-	routing.eliminarRutas =eliminarRutas;
-	routing.openBubble =openBubble;
-	routing.marcarRutaAlMapa =marcarRutaAlMapa;
-	routing.AgregarManiobrasAlMapa =AgregarManiobrasAlMapa;
-	routing.AgregarCurvasAlMapa =AgregarCurvasAlMapa;
-	routing.AgregarInstruccionesAlPanel =AgregarInstruccionesAlPanel;
-	routing.AgregarResumenAlPanel =AgregarResumenAlPanel;
 	return routing;
 });
+	
 
-
+	var id=1;
 	//marca la ruta de varios puntos 
 	var marcarRuta =function(configObj) {
-	  if(configObj.mode_scope==1){
+	  if(configObj.mode_scope==1){//si es de una sola ruta elimina las rutas consultadas antes
 	    if(hayRutas)
 	      eliminarRutas();
 	    hayRutas=true;
 	  }else{
+	  	id = configObj.id;
 	  	var transport = getTransport(configObj.id);
 	    configObj.rutaRequestParams.mode=transport;
 	  	
@@ -51,18 +45,37 @@ angular.module('hereMapa')
 		  onError
 		);
 	}
-
+	function cerrarBubles() {
+		var array = ui.getBubbles();
+		for (var i = array.length - 1; i >= 0; i--) 
+			array[i].close();
+		
+	}
 
 	var onSuccess=function (result) {
 
-		console.log(result);
-		var ruta = result.response.route[0];
-		marcarRutaAlMapa(ruta);
-		AgregarManiobrasAlMapa(ruta);
-		AgregarCurvasAlMapa(ruta.waypoint);
-		AgregarInstruccionesAlPanel(ruta);
-		AgregarResumenAlPanel(ruta.summary);
+		if(result.type !="ApplicationError"){
+			cerrarBubles();
+			console.log(result);
+			var ruta = result.response.route[0];
+			marcarRutaAlMapa(ruta);
+			AgregarManiobrasAlMapa(ruta);
+			AgregarCurvasAlMapa(ruta.waypoint);
+			AgregarInstruccionesAlPanel(ruta);
+			AgregarResumenAlPanel(ruta.summary);
+		}else {
+			console.log("Ocurrio algun error");
+		}
+
 		
+	}
+
+	var algunError= function(result){
+		if(typeof(result)=='ns2:RoutingServiceErrorType'){
+			alert("No pudimos encontrar una ruta"+result.details);
+			return true;
+		}
+		return false;
 	}
 
 	var onError=function (error) {
@@ -85,7 +98,29 @@ angular.module('hereMapa')
 	}
 	var hayRutas=false;
 
-	var eliminarRutas=function () {
+	function eliminarRutas(x) {
+		console.log("funcionas");
+		if(typeof(x)=="undefined")
+			eliminarRutas1();
+		else 
+			eliminarRuta(x);
+		cerrarBubles();
+	}
+
+	//elimina una ruta con un id en especifico
+	var eliminarRuta=function (id) {
+		console.log("id ruta es "+id);
+
+		var array = map.getObjects();
+		console.log("eliminando ruta...............");
+		for (var i = array.length - 1; i >= 0; i--)
+			if(array[i].ruta==id)
+				array[i].dispose();
+			
+		hayRutas=false;
+	}
+
+	var eliminarRutas1=function () {
 		var array = map.getObjects();
 		console.log("eliminando rutas...............");
 		for (var i = array.length - 1; i >= 0; i--)
@@ -104,8 +139,8 @@ angular.module('hereMapa')
 	 if(!bubble){
 	    bubble =  new H.ui.InfoBubble(
 	      position,
-	      // The FO property holds the province name.
-	      {content: text});
+	      {content: text+"\n"+eliminarRutaBtn+id+eliminarRutaBtn2});
+
 	    ui.addBubble(bubble);
 	  } else {
 	    bubble.setPosition(position);
@@ -134,7 +169,7 @@ angular.module('hereMapa')
 		    	strokeColor: 'rgba(0, 128, 255, 0.7)'
 		  	}
 		});
-		polyline.ruta=1;
+		polyline.ruta=id;
 		map.addObject(polyline);
 		map.setViewBounds(polyline.getBounds(), true);
 		console.log("anadiendo lineas al mapa FINALIZADO");
@@ -146,11 +181,14 @@ angular.module('hereMapa')
 	*/
 	var AgregarManiobrasAlMapa=function (ruta){
 		console.log("Anadiendo maniobras al mapa....");
+
+
 		var icon = '<svg width="18" height="18" ' +
 		'xmlns="http://www.w3.org/2000/svg">' +
 		'<circle cx="8" cy="8" r="8" ' +
 		'fill="#1b468d" stroke="white" stroke-width="1"  />' +
-		'</svg>',
+		'</svg>'
+		,
 		dotIcon = new H.map.Icon(icon, {anchor: {x:8, y:8}}),
 		group = new  H.map.Group(),
 		i,
@@ -166,7 +204,7 @@ angular.module('hereMapa')
 					{icon: dotIcon}
 				);
 				marker.instruction = maneuver.instruction;
-				marker.ruta = 1;
+				marker.ruta = id;
 				group.addObject(marker);
 			}
 		}

@@ -35,7 +35,7 @@ angular.module('hereMapa')
 		$log.log("refresca el mapa");
 		$log.log($geolocation);
 		if(markerObject==null){
-			markerObject = new H.map.Marker(coor);
+			markerObject = new H.map.Marker(coor,{icon:markerUser});
 			markerObject.type=3;
 			map.addObject(markerObject);
 		}else{//si no actualizamos el marcador
@@ -72,6 +72,7 @@ angular.module('hereMapa')
 	            break;
 	    }
 	}
+	//recibe una imagen url
 	positioning.setMarkerUser = function (markerUser) {
 		positioning.markerUser = markerUser;
 	}
