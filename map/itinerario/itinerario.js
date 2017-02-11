@@ -17,25 +17,18 @@ angular.module('hereMapa', ['ngGeolocation'])
 		mapaProvider.cargarMapa();
 		
 		//sacar geolocalizacion*******************************
-		
 		//inicializo la geolocalizacion
 		$geolocation.watchPosition({
 		           enableHighAccuracy: true
 		       });
-		//inicializamos el mapa en las coordenadas iniciales
-		//mover la camara del mapa a la posicion indicada 
-		$scope.irLugar = function (element) {
-			//configurar el mapa 
-			var coords = getCoordenadas(element);
-			configurarMapa(coords);
-			var objJson = configurarJsonRuta($scope.coordsUser,coords);
-			//entra el configurarMarcador(icono {canvas,imagen,})
-			configurarMarcador("",coords,objJson);
-
-
-		}
+		
+		var cont=9;
 		function configurarJsonRuta(coordsO,coordsD) {
+			var  ide=Math.random() * (100 - cont) + cont;
+			console.log("3 mostrando id "+ide);
+			cont++;
 			return {
+				id:ide,
 				rutaRequestParams :{
 					language:'es-es',
 					departure:'now',
@@ -47,14 +40,25 @@ angular.module('hereMapa', ['ngGeolocation'])
 					waypoint1: coordsD.lat+","+coordsD.lng 
 				},
 				mode_scope:2,//modo donde se va a hacer la ruta 1 single route 2 varias rutas,
-				distancia: null,
-				id:coordsO.lat*45
+				distancia: null
 			};
 		}
 
+		//inicializamos el mapa en las coordenadas iniciales
+		//mover la camara del mapa a la posicion indicada 
+		$scope.irLugar = function (element) {
+			//configurar el mapa 
+			var coords = getCoordenadas(element);
+			$log.warn("coordenadas"+JSON.stringify(coords));
+			configurarMapa(coords);
+			var objJson = configurarJsonRuta($scope.coordsUser,coords);
+			$log.warn("objJson"+JSON.stringify(objJson));
+			configurarMarcador("",coords,objJson);
+		}
 
 		setTimeout(function () {
 			//$log.log("inicializando geolocalizacion");
+			//Si la geolocalizacion es indefinida
 			if(typeof($geolocation.position.coords) != "undefined" ){ 
 				$log.log("inicializando cordenadas .....");
 				$log.log($geolocation);
@@ -65,7 +69,9 @@ angular.module('hereMapa', ['ngGeolocation'])
 				$scope.coordsUser=positioning.coords = mapaProvider.coordUser = coor;
 				positioning.moveMap();
 				$log.log("coordenadas inicializandas");
-			}if(typeof($geolocation.position.error) != "undefined" ){
+			}
+			//si hay algun
+			if(typeof($geolocation.position.error) != "undefined" ){
 				var error = $geolocation.position.error;
 				alert("Ocurrio un error "+error.message);
 			    cancelarRefresh();
@@ -96,6 +102,7 @@ angular.module('hereMapa', ['ngGeolocation'])
 			clearTimeout(refrescarCoords);
 			clearTimeout(refrescarMarker);
 		}
+
 		
 		//sacargeolocalizacion*********************************************
 		
@@ -112,39 +119,41 @@ angular.module('hereMapa', ['ngGeolocation'])
 			}
 			:
 			{
-				lat:element.lugar.Location.DisplayPosition.latitude,
-				lng:element.lugar.Location.DisplayPosition.longitude
+				lat:element.lugar.Location.DisplayPosition.Latitude,
+				lng:element.lugar.Location.DisplayPosition.Longitude
 			};
 		}
+
 		function configurarMarcador(iconUrl,coordsO,objJson) {
 			$log.info("configurando marcador");
 			//var icon = new H.map.Icon(iconUrl);
 			var marcador = new H.map.Marker(coordsO,
 			{ icon: iconUrl });
+			//generamos id aleatorio
+			$log.warn(objJson.id);
 			var html = 
-			"<div id='contenedorBubble"+objJson.id+"'>"+
+			"<div id='contenedorBubble'>"+
 			"<h5><small></small></h5>"+
 			"<small>direccion</small>"+
-			"<input checked name='transporte' value='fastest;publicTransport' type='radio' id='radio1'>Trasporte publico<br>"+
-			"<input name='transporte' value='fastest;car' type='radio' id='radio2'>Coche<br>"+
-			"<input name='transporte' value='shortest;pedestrian' type='radio' id='radio3'>A pie<br>"+
+			"<input onClick='cambio(this)' checked name='transporte' value='fastest;publicTransport' type='radio' id='radio1'>Trasporte publico<br>"+
+			"<input onClick='cambio(this)' name='transporte' value='fastest;car' type='radio' id='radio2'>Coche<br>"+
+			"<input onClick='cambio(this)' name='transporte' value='shortest;pedestrian' type='radio' id='radio3'>A pie<br>"+
 			"<button type='button' onClick='marcarRuta("+JSON.stringify(objJson)+")'>IR</button>"+
 			"</div>";
-			marcador.setData(html);
-			//se añade el id para poder eliminar mejor
-			marcador.ruta=objJson.id;
+			$log.warn(html);
+
+			//No se como este implementada en el otro component 
+			//marcador.id = marcador.ruta=objJson.id;
 
 			$log.info("configurando marcador ANADIENDO EVENTOS");
 			marcador.addEventListener('tap', function (evt) {
 			  var bubble =  new H.ui.InfoBubble(evt.target.getPosition(), {
-			    content: evt.target.getData()
+			    content:html//evt.target.getData()
 			  });
-			  var control = new H.ui.Control();
+			  bubble.eliminar=false;
+			  
 			  mapaProvider.ui.addBubble(bubble); 
 			}, false);
-
-
-			mapaProvider.map.addObject(marcador);
 
 			var zIndex=1;
 			mapaProvider.map.addEventListener('tap', function (evt) {
@@ -152,13 +161,31 @@ angular.module('hereMapa', ['ngGeolocation'])
 					evt.target.setZIndex(zIndex++);
 				}
 			}); 
+			marcador.eliminar = false;
+			mapaProvider.map.addObject(marcador);
 			$log.info("configurando marcador TERMINADO");
 		}
 
+		function marcarRutaDelugares() {
+			var lugares = obtenerLugaresItienerario(),
+			objJson;
+			for (var i =0; i<lugares.length;i++) {
+				objJson=configurarJsonRuta(lugares[i].lugar1,lugares[i].lugar2);
+				routingMaps.marcarRuta(objJson);
+			}
 
-		
+
+		}
 
 
+
+		//consultamos los datos
+		function obtenerLugaresItienerario() {
+			var lugares = JSON.parse(sessionStorage.getItem("Lugares"));
+			return lugares;
+		}	
+
+/********************************///////////////////////////////////////////////////////////////////
 
 
 		$scope.buscar = function(val){

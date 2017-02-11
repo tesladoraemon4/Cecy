@@ -26,21 +26,44 @@ Nombre del componente a llamar
 
 
 QUE NECESITO PARA MANDAR A BUSCAR LAS RUTAS ES
-
-
-
-Lo que necesito con los lugares cecy 
-las coordenadas con que se van a consultar a la db
+las coordenadas con que se van a consultar de la db
 el transporte que utilizara para ir de lugar1 a lugar2,
  los transporetes que puede usar estan aca :
 https://developer.here.com/rest-apis/documentation/routing/topics/resource-param-type-routing-mode.html
 En la primera posicion del arreglo metes el primer elemento de la lista dragable y asi sucesivamente
 
-	[{
-		lugar1:lat+","+long,
-		lugar2:lat+","+long,
-		transporte:"transporte"
-	}]
+[{
+	lugar1:{lat:,lng:},
+	lugar2:{lat:,lng:},
+	transporte:"transporte"
+}]
+El arreglo sera guardado en el sessionStorange
+sessionStorange.setItem("Lugares",arrayOBJ);
+sessionStorange.getItem("Lugares");
+
+
+
+
+
+
+
+//modulo de itinerario 
+buscar lugares con un autocompletado de texto con sugerencias
+cuando se requiera saber donde esta un lugar se mueve el mapa al sitio en donde quiero estas
+posterior mente si el usuario lo desea hace una consulta para obtener la ruta de como llegar al lugar marcado
+
+
+
+//modulo lugares 
+
+
+
+
+
+
+
+
+
 
 
 
@@ -83,7 +106,7 @@ objJSON = {
 		waypoint1: lat+","+long  // Friedrichstraße Railway Station
 	},
 	mode_scope:2,//modo donde se va a hacer la ruta 1 single route 2 varias rutas,
-	id://id del objeto
+	id://id del objeto con el que identifica un marcador unico
 }
 
 

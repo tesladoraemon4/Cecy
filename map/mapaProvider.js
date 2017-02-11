@@ -37,10 +37,7 @@ angular.module('hereMapa')
     //Añadimos eventos al mapa 
     var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(mapaProvider.map));
 
-
-
-
-    /***MODULOS DE ARRASTRE DEL MAPA ***/
+    /***MODULOS DE ARRASTRE DEL MAPA  (SIRVE PARA refrescar datos)***/
     mapaProvider.map.addEventListener('dragend', function(evt) {//cuando termina el arrastre del mapa
       //fijamos un retardo entre el arrastre y las consultas
       var timer = null;
@@ -50,26 +47,22 @@ angular.module('hereMapa')
       function exc(){
         var coord = mapaProvider.map.getCenter();
 
-        $log.info(mapaProvider.catConsultadas);
+        $log.info("Haciendo consultas a la api ");
 
         if(mapaProvider.catConsultadas.length!=0)
           for (var i = mapaProvider.catConsultadas.length - 1; i >= 0; i--)  
-            lugaresEvent(mapaProvider.catConsultadas[i],coord);
+            actualizaConArrastre(mapaProvider.catConsultadas[i],coord);
       }
-
-
-
-    });
+    });//fi event listener
     
     //Creamos los botones por defauld
     mapaProvider.ui = H.ui.UI.createDefault(mapaProvider.map, defaultLayers);
     ui=mapaProvider.ui;
-
   }
 
 
   //crea un nuevo mapa explorar los lugares por categoria
-  var lugaresEvent = function (cat,coord) {
+  var actualizaConArrastre = function (cat,coord) {
     $log.info("Consultando..");
     mapaProvider.anadirMarcadoresAlMapa(mapaProvider.map,cat,coord);
   }
@@ -90,6 +83,7 @@ angular.module('hereMapa')
   mapaProvider.probando=function () {
     $log.info("jskdhfsjdklfsdjkflh");
   }
+  var bubble;
   mapaProvider.anadirMarcadoresAlMapa = function(map,categoria,coord){
     var radio=3500;
     //consultamos las categorias de direcciones cercanas
@@ -102,32 +96,16 @@ angular.module('hereMapa')
     $log.info("URL lugares cercanos \n"+url);
 
     //creamos un grupo*************************
-    
-
     var group = new H.map.Group();
-
     mapaProvider.map.addObject(group);
-
-    // add 'tap' event listener, that opens info bubble, to the group
     group.addEventListener('tap', function (evt) {
-      // event target is the marker itself, group is a parent event target
-      // for all objects that it contains
-
       $log.info(evt.target);
-      var bubble =  new H.ui.InfoBubble(evt.target.getPosition(), {
+      bubble =  new H.ui.InfoBubble(evt.target.getPosition(), {
         content: evt.target.getData()
       });
       bubble.categoria = categoria;
-
-
-
-      var control = new H.ui.Control();
-
-
-
+      bubble.eliminar=false;
       mapaProvider.ui.addBubble(bubble);
-
-
     }, false);
     //creamos un grupo*************************
 
@@ -146,6 +124,7 @@ angular.module('hereMapa')
       }
 
 
+      $log.warn(items);
       $log.info("consultando datos marcadores ...");
       for (var i = items.length - 1; i >= 0; i--) {//agregando caracteristicas a los marcadores
         
@@ -156,26 +135,30 @@ angular.module('hereMapa')
         var marcador = new H.map.Marker({ lat:coords.lat, lng:coords.long},
         { icon: icon });
 
-
-        objJson.rutaRequestParams.waypoint0=coordUser.lat+","+coordUser.lng;
-        objJson.rutaRequestParams.waypoint1=lat+","+long;
+        $log.warn("holas");
+        $log.warn(mapaProvider.coordUser);
+        
+        objJson.id = Math.random() * (100 - i) + i;
+        objJson.rutaRequestParams.waypoint0=coord.lat+","+coord.lng;
+        objJson.rutaRequestParams.waypoint1=items[i].position[0]+","+items[i].position[1];
         objJson.distancia=items[i].distance;
 
         var html = 
         "<div id='contenedorBubble"+items[i].distance+"'>"+
 			"<h5>"+items[i].title+"<small>"+items[i].distance+"</small></h5>"+
 			"<small>direccion</small>"+
-			"<input checked name='transporte' value='fastest;publicTransport' type='radio' id='radio1'>Trasporte publico<br>"+
-			"<input name='transporte' value='fastest;car' type='radio' id='radio2'>Coche<br>"+
-			"<input name='transporte' value='shortest;pedestrian' type='radio' id='radio3'>A pie<br>"+
-			"<button type='button' onClick='marcarRuta("+JSON.stringify(objJson)+")'>IR</button>"+
-		"</div>";
+			"<input onClick='cambio(this)' checked name='transporte' value='fastest;publicTransport' type='radio' id='radio1'>Trasporte publico<br>"+
+      "<input onClick='cambio(this)' name='transporte' value='fastest;car' type='radio' id='radio2'>Coche<br>"+
+      "<input onClick='cambio(this)' name='transporte' value='shortest;pedestrian' type='radio' id='radio3'>A pie<br>"+
+      "<button type='button' onClick='marcarRuta("+JSON.stringify(objJson)+")'>IR</button>"+
+      "</div>";
 
 
 
         marcador.setData(html);
         marcador.categoria=categoria;
         marcador.ruta=0;
+        marcador.eliminar=true;
         group.addObject(marcador);
 
         //funcionalidad para sobreponer marcador 
@@ -191,6 +174,15 @@ angular.module('hereMapa')
       $log.error("Ocurrio algun error anadirMarcadoresAlMapa.js en funcion anadirMarcadoresAlMapa \n "+error);
     });
   }
+
+
+
+
+
+
+
+
+
 
   mapaProvider.quitarMarcadores = function (categoria) {
     $log.info(mapaProvider.catConsultadas);

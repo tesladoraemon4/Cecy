@@ -7,51 +7,69 @@
 angular.module('hereMapa',['ngGeolocation'])
 .component('mapaHere',{
 	templateUrl:'map/categoriaLugares/mapaPlaces.html',
-	controller : function(categorias,mapaProvider,$scope,$log,positioning,$geolocation/*es provisional*/){
+	controller : function(categorias,mapaProvider,$scope,$log,$geolocation/*es provisional*/){
 		$scope.categorias = [];
 		$scope.consultados = [];
 		$scope.coordsUser = {};
-		mapaProvider.cargarMapa();
+		
 		//sacar geolocalizacion*****************************************************************+
-		//no obtiene la geolocalizacion
-		$geolocation.getCurrentPosition({
-		           enableHighAccuracy: true
-		       });
-		//inicializamos el mapa en las coordenadas iniciales
-		setTimeout(function inicializaCoordenadas() {
-			//$log.log("inicializando geolocalizacion");
-			if(typeof($geolocation.position.coords) != "undefined" ){
-				var coor = 
-				{lat:$geolocation.position.coords.latitude,
-				lng:$geolocation.position.coords.longitude}
-				//$log.log(coor);
-				$scope.coordsUser=positioning.coords = mapaProvider.coordUser = coor;
-				positioning.moveMap();
+		//VERSION NAVIGATOR
+		var geolocalitation = {};
+		var markerObject=null;
+		 geolocalitation.errorGeo=false;
+		var initGeolocalizacion = function(){
+			navigator.geolocation.watchPosition(function (data) {
+				var coords = {lat:data.coords.latitude,lng:data.coords.longitude};
+				$scope.coordsUser = coords;
+				mapaProvider.coordUser = coords;
+				geolocalitation.errorGeo = false;
+			},
+			function (error) {
+			    Geolocation.clearWatch();
+			    geolocalitation.errorGeo=true;
+			},
+			{
+		       enableHighAccuracy: true
+		    });
+		}
+		//refresca la vista del mapa 
+		var refreshMapMarker = 
+			setInterval(function () {
+			$log.log("refreshMapMarker Error geo "+geolocalitation.errorGeo);
+
+			if(geolocalitation.errorGeo){
+				var coor =$scope.coordsUser;
+				var aux = markerObject;
+				mapaProvider.map.removeObject(markerObject);
+				markerObject = aux;
+				markerObject.setPosition(coor);
+				markerObject.type=3;
+				mapaProvider.map.addObject(markerObject);
 			}else{
-				positioning.moveMapToMexico();
+				clearTimeout(refreshMapMarker);
+
+			}
+			//$log.log("refreshMapMarker end");
+		},3000);
+		mapaProvider.cargarMapa();
+		initGeolocalizacion();
+		setTimeout(function fijarPosInicial() {
+			if(!geolocalitation.errorGeo){
+				mapaProvider.map.setCenter($scope.coordsUser);
+				mapaProvider.map.setZoom(10);
+				markerObject=new H.map.Marker($scope.coordsUser);
+				mapaProvider.map.addObject(markerObject);
+			}
+			else{
+				mapaProvider.map.setCenter({lat:19.432608,lng:-99.133208});
+				mapaProvider.map.setZoom(10);
+				mapaProvider.map.addObject(new H.map.Marker({lat:19.432608,lng:-99.133208}));
+				$log.error("Ocurrio un error en la geolocalizacion");
 			}
 		},3000);
 
-		
-		//refrescamos las coordenadas cada x tiempo
-		setInterval(function actualizaCoordenadas() {
-			//$log.log("Refrescando coordenadas");
-			var coor = 
-			{lat:$geolocation.position.coords.latitude,
-			lng:$geolocation.position.coords.longitude}
-			$scope.coordsUser=positioning.coords = mapaProvider.coordUser = coor;
-		},3500);
-		
-		setInterval(function () {
-			if(typeof($geolocation.position.coords) != "undefined" ){
-				positioning.refreshMapMarker(mapaProvider.map);
-			}else{
-				positioning.moveMapToMexico();
-			}
 
-		},3500);
 
-		
 
 
 		//sacar geolocalizacion*****************************************************************+
