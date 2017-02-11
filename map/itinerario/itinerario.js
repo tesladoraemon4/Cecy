@@ -23,7 +23,7 @@ angular.module('hereMapa', ['ngGeolocation'])
 		       });
 		
 		var cont=9;
-		function configurarJsonRuta(coordsO,coordsD) {
+		function configurarJsonRuta(coordsO,coordsD,panelRemove) {
 			var  ide=Math.random() * (100 - cont) + cont;
 			console.log("3 mostrando id "+ide);
 			cont++;
@@ -40,7 +40,8 @@ angular.module('hereMapa', ['ngGeolocation'])
 					waypoint1: coordsD.lat+","+coordsD.lng 
 				},
 				mode_scope:2,//modo donde se va a hacer la ruta 1 single route 2 varias rutas,
-				distancia: null
+				distancia: null,
+				panelRemove:panelRemove
 			};
 		}
 
@@ -51,7 +52,7 @@ angular.module('hereMapa', ['ngGeolocation'])
 			var coords = getCoordenadas(element);
 			$log.warn("coordenadas"+JSON.stringify(coords));
 			configurarMapa(coords);
-			var objJson = configurarJsonRuta($scope.coordsUser,coords);
+			var objJson = configurarJsonRuta($scope.coordsUser,coords,true);
 			$log.warn("objJson"+JSON.stringify(objJson));
 			configurarMarcador("",coords,objJson);
 		}
@@ -157,9 +158,9 @@ angular.module('hereMapa', ['ngGeolocation'])
 
 			var zIndex=1;
 			mapaProvider.map.addEventListener('tap', function (evt) {
-				if (evt.target instanceof mapsjs.map.Marker) {
+				if (evt.target instanceof mapsjs.map.Marker) 
 					evt.target.setZIndex(zIndex++);
-				}
+				
 			}); 
 			marcador.eliminar = false;
 			mapaProvider.map.addObject(marcador);
@@ -170,7 +171,7 @@ angular.module('hereMapa', ['ngGeolocation'])
 			var lugares = obtenerLugaresItienerario(),
 			objJson;
 			for (var i =0; i<lugares.length;i++) {
-				objJson=configurarJsonRuta(lugares[i].lugar1,lugares[i].lugar2);
+				objJson=configurarJsonRuta(lugares[i].lugar1,lugares[i].lugar2,false);
 				routingMaps.marcarRuta(objJson);
 			}
 

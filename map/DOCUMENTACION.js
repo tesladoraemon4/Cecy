@@ -106,7 +106,8 @@ objJSON = {
 		waypoint1: lat+","+long  // Friedrichstraße Railway Station
 	},
 	mode_scope:2,//modo donde se va a hacer la ruta 1 single route 2 varias rutas,
-	id://id del objeto con el que identifica un marcador unico
+	id:,//id del objeto con el que identifica un marcador unico,
+	panelRemove:(true|false)
 }
 
 

@@ -120,7 +120,8 @@ angular.module('hereMapa')
           routeattributes : 'waypoints,summary,shape,legs',
           maneuverattributes: 'direction,action'
         },
-        mode_scope:1
+        mode_scope:1,
+        panelRemove:true
       }
 
 

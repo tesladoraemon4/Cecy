@@ -16,10 +16,18 @@ angular.module('hereMapa')
 });
 	
 	var id=1;
+	//configurando la plataforma
+	var rutaInstructionsContainer;
+	var rutaInstructionsContainerS;
 	//marca la ruta de varios puntos 
 	var marcarRuta =function(configObj) {
 		console.log("marca algo la ruta");
+		console.log("OBJ JSON");
+		console.log(configObj);
+
+
 	  	id = configObj.id;	
+	  	initPanels();
 	  if(configObj.mode_scope==1){//si es de una sola ruta elimina las rutas consultadas antes
 	    eliminarRutas();
 	    hayRutas=true;
@@ -30,15 +38,29 @@ angular.module('hereMapa')
 	  }
 	  	var transport = getTransport();
 	    configObj.rutaRequestParams.mode=transport;
-		//configurando la plataforma
-		rutaInstructionsContainer = document.getElementById('panel');
 		var platform = new H.service.Platform({
 			'app_id': 'EJiiwcESc8a3fX3YDAhK',
 			'app_code': 'lbdJ16arthEPwrA7nhmluA',
 			useCIT: true,
 			useHTTPS: true
 		});
+		var onSuccess=function (result) {
+			if(result.type !="ApplicationError"){
+				cerrarTodasBurbujas();//infoBusbugar
+				console.log(result);
+				var ruta = result.response.route[0];
+				marcarRutaAlMapa(ruta);
+				AgregarManiobrasAlMapa(ruta);
 
+
+				AgregarCurvasAlMapa(ruta.waypoint,configObj.panelRemove);
+				AgregarInstruccionesAlPanel(ruta,configObj.panelRemove);
+				AgregarResumenAlPanel(ruta.summary,configObj.panelRemove);
+			}else {
+				console.log("Ocurrio algun error");
+				console.log(result);
+			}
+		}
 		var rutar = platform.getRoutingService();
 		console.log("Config de ruta ");
 		console.log(configObj.rutaRequestParams);
@@ -48,29 +70,20 @@ angular.module('hereMapa')
 		  onSuccess,
 		  onError
 		);
-	}
-	var onSuccess=function (result) {
 
-		if(result.type !="ApplicationError"){
-			cerrarTodasBurbujas();//infoBusbugar
-			console.log(result);
-			var ruta = result.response.route[0];
-			marcarRutaAlMapa(ruta);
-			AgregarManiobrasAlMapa(ruta);
-			AgregarCurvasAlMapa(ruta.waypoint);
-			AgregarInstruccionesAlPanel(ruta);
-			AgregarResumenAlPanel(ruta.summary);
-		}else {
-			console.log("Ocurrio algun error");
-			console.log(result);
-		}
-
-		
 	}
+
+
+	function initPanels() {
+		rutaInstructionsContainer = document.getElementById('panel');
+		rutaInstructionsContainerS = document.getElementById('panelS');
+	}
+	
 	/*
 	RUTASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 	*/
 	function eliminarRutas(x) {
+		vaciarPanel(true);
 		console.log("funcionas");
 		if(typeof(x)=="undefined")
 			eliminarRutas1();//elimina todas las rutas
@@ -146,12 +159,6 @@ angular.module('hereMapa')
 		return sessionStorage.getItem("transport");
 	}
 	var hayRutas=false;
-
-
-
-
-	var rutaInstructionsContainer=null;
-
 
 	var bubble;
 
@@ -247,32 +254,46 @@ angular.module('hereMapa')
 	}
 
 	//agregas curvas al mapa
-	var AgregarCurvasAlMapa=function (waypoints){
+	var AgregarCurvasAlMapa=function (waypoints,isRemove){
+		console.log(isRemove);
 		var nodeH3 = document.createElement('h3'),
 		waypointLabels = [],
 		i;
 		for (i = 0;i<waypoints.length; i++) 
 			waypointLabels.push(waypoints[i].label)
 		nodeH3.textContent = waypointLabels.join(' - ');
-		rutaInstructionsContainer.innerHTML = '';
-		rutaInstructionsContainer.appendChild(nodeH3);
+		if(isRemove){
+			rutaInstructionsContainer.innerHTML = '';
+			rutaInstructionsContainer.appendChild(nodeH3);
+		}else{
+			rutaInstructionsContainerS.appendChild(nodeH3);
+		}
 	}
-	var AgregarResumenAlPanel=function (resumen){
-		console.log(resumen);
+	var AgregarResumenAlPanel=function (resumen,isRemove){
+		console.log("resumen en el panel");
+		console.log(isRemove);
 		var summaryDiv = document.createElement('div'),content = '';
 		content += '<b>Distancia</b>: ' + resumen.distance  + 'm. <br/>';
-		content += '<b>Tiempo de viaje</b>: ' + resumen.travelTime.toMMSS() + ' (en el trafico actual)';
+		content += '<b>Tiempo de viaje</b>: ' + resumen.travelTime.toMMSS() + ' (en el trafico actual)<br>';
 
 
 		summaryDiv.style.fontSize = 'small';
 		summaryDiv.style.marginLeft ='5%';
 		summaryDiv.style.marginRight ='5%';
 		summaryDiv.innerHTML = content;
-		rutaInstructionsContainer.appendChild(summaryDiv);
+		if(isRemove){
+			console.log(rutaInstructionsContainer);
+			rutaInstructionsContainer.appendChild(summaryDiv);
+		}
+		else{
+			console.log(rutaInstructionsContainerS);
+			rutaInstructionsContainerS.appendChild(summaryDiv);
+		}
+
 		
 	}
 
-	var AgregarInstruccionesAlPanel=function (ruta){
+	var AgregarInstruccionesAlPanel=function (ruta,isRemove){
 		var nodeOL = document.createElement('ol'),i,j;
 
 		nodeOL.style.fontSize = 'small';
@@ -296,8 +317,12 @@ angular.module('hereMapa')
 				nodeOL.appendChild(li);
 			}
 		}
-
-		rutaInstructionsContainer.appendChild(nodeOL);
+		
+		if(isRemove)
+			rutaInstructionsContainer.appendChild(nodeOL);
+		else
+			rutaInstructionsContainerS.appendChild(nodeOL);
+		
 	}
 
 
@@ -311,7 +336,12 @@ angular.module('hereMapa')
 	var cambio = function (element) {
 		sessionStorage.setItem("transport",element.value);
 	}
-
+	function vaciarPanel(isRemove) {
+		if(isRemove)
+			rutaInstructionsContainer.innerHTML="";
+		else
+			rutaInstructionsContainerS.innerHTML="";
+	}
 
 
 /*
