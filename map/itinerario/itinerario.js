@@ -16,7 +16,7 @@ angular.module('hereMapa', ['ngGeolocation'])
 		var timer = null;
 		mapaProvider.cargarMapa();
 		
-		//sacar geolocalizacion*******************************
+		//sacar geolocalizacion*****geolocalizacion***********geolocalizacion*******geolocalizacion********
 		//inicializo la geolocalizacion
 		$geolocation.watchPosition({
 		           enableHighAccuracy: true
@@ -166,7 +166,29 @@ angular.module('hereMapa', ['ngGeolocation'])
 			mapaProvider.map.addObject(marcador);
 			$log.info("configurando marcador TERMINADO");
 		}
+		marcarRutaDelugares();
+		//consultamos los datos
+		function obtenerLugaresItienerario() {
+			
+			var lugares = 
+			[{
+				lugar1:{lat:19.432608,lng:-99.133208},
+				lugar2:{lat:23.75388,lng:-99.13412},
+				transporte:"fastest;car"
+			},
+			{
+				lugar1:{lat:23.75388,lng:-99.13412},
+				lugar2:{lat:32.5081,lng:-117.00865},
+				transporte:"fastest;car"
+			}];
 
+			sessionStorage.setItem("Lugares",JSON.stringify(lugares));
+			
+			var lugares = JSON.parse(sessionStorage.getItem("Lugares"));
+			return lugares;
+		}	
+
+/********************************///////////////////////////////////////////////////////////////////
 		function marcarRutaDelugares() {
 			var lugares = obtenerLugaresItienerario(),
 			objJson;
@@ -175,19 +197,7 @@ angular.module('hereMapa', ['ngGeolocation'])
 				routingMaps.marcarRuta(objJson);
 			}
 
-
 		}
-
-
-
-		//consultamos los datos
-		function obtenerLugaresItienerario() {
-			var lugares = JSON.parse(sessionStorage.getItem("Lugares"));
-			return lugares;
-		}	
-
-/********************************///////////////////////////////////////////////////////////////////
-
 
 		$scope.buscar = function(val){
 		  if(timer) $timeout.cancel(timer);
@@ -314,7 +324,7 @@ angular.module('hereMapa', ['ngGeolocation'])
 		}
 
 		$scope.anadirItinerario = function (elemento) {
-			sessionStorage.setItem("Agenda",elemento.value);
+			sessionStorage.setItem("Lugares",elemento.value);
 		}
 
 
