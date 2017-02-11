@@ -97,7 +97,7 @@ angular.module('hereMapa')
 		var array = map.getObjects();
 		console.log("eliminando rutas...............");
 		for (var i = array.length - 1; i >= 0; i--)
-			if(array[i].ruta==1)
+			if(array[i].ruta==1 && array[i].eliminar==true)
 				array[i].dispose();
 			
 		hayRutas=false;
@@ -205,10 +205,11 @@ angular.module('hereMapa')
 		    	strokeColor: 'rgba(0, 128, 255, 0.7)'
 		  	}
 		});
+		//ATRIBUTOS 
 		polyline.id=id;
 		polyline.ruta =1;
-		//******************
 		polyline.eliminar = true;
+
 		map.addObject(polyline);
 		map.setViewBounds(polyline.getBounds(), true);
 		console.log("anadiendo lineas al mapa FINALIZADO");
@@ -220,8 +221,6 @@ angular.module('hereMapa')
 	*/
 	var AgregarManiobrasAlMapa=function (ruta){
 		console.log("Anadiendo maniobras al mapa....");
-
-
 		var icon = '<svg width="18" height="18" ' +
 		'xmlns="http://www.w3.org/2000/svg">' +
 		'<circle cx="8" cy="8" r="8" ' +
@@ -234,7 +233,7 @@ angular.module('hereMapa')
 		j;
 
 		//anadiendo marcadores en cada maniobra
-		for (i = 0;  i < ruta.leg.length; i += 1) {
+		for (i = 0;  i < ruta.leg.length; i += 1) 
 			for (j = 0;  j < ruta.leg[i].maneuver.length; j += 1) {
 				maneuver = ruta.leg[i].maneuver[j];
 				var marker =  new H.map.Marker(
@@ -243,12 +242,14 @@ angular.module('hereMapa')
 					{icon: dotIcon}
 				);
 				marker.instruction = maneuver.instruction;
-				marker.ruta = id;
+				//atributos añadidos
+				marker.ruta = 1;
 				marker.id = id;
 				marker.eliminar = true;
+				
 				group.addObject(marker);
 			}
-		}
+		
 		//anades eventos a cada maniobra
 		group.addEventListener('tap', function (evt) {
 			map.setCenter(evt.target.getPosition());

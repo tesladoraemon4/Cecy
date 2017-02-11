@@ -32,25 +32,7 @@ angular.module('hereMapa',['ngGeolocation'])
 		       enableHighAccuracy: true
 		    });
 		}
-		//refresca la vista del mapa 
-		var refreshMapMarker = 
-			setInterval(function () {
-			$log.log("refreshMapMarker Error geo "+geolocalitation.errorGeo);
-
-			if(geolocalitation.errorGeo){
-				var coor =$scope.coordsUser;
-				var aux = markerObject;
-				mapaProvider.map.removeObject(markerObject);
-				markerObject = aux;
-				markerObject.setPosition(coor);
-				markerObject.type=3;
-				mapaProvider.map.addObject(markerObject);
-			}else{
-				clearTimeout(refreshMapMarker);
-
-			}
-			//$log.log("refreshMapMarker end");
-		},3000);
+		
 		mapaProvider.cargarMapa();
 		initGeolocalizacion();
 		setTimeout(function fijarPosInicial() {
@@ -67,7 +49,27 @@ angular.module('hereMapa',['ngGeolocation'])
 				$log.error("Ocurrio un error en la geolocalizacion");
 			}
 		},3000);
+		function iniciarRefresh() {
+			//refresca la vista del mapa 
+			var refreshMapMarker = 
+				setInterval(function () {
+				$log.log("refreshMapMarker Error geo "+geolocalitation.errorGeo);
 
+				if(geolocalitation.errorGeo){
+					var coor =$scope.coordsUser;
+					var aux = markerObject;
+					mapaProvider.map.removeObject(markerObject);
+					markerObject = aux;
+					markerObject.setPosition(coor);
+					markerObject.type=3;
+					mapaProvider.map.addObject(markerObject);
+				}else{
+					clearTimeout(refreshMapMarker);
+
+				}
+				//$log.log("refreshMapMarker end");
+			},3000);
+		}
 
 
 
