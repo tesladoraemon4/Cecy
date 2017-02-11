@@ -69,8 +69,8 @@ angular.module('hereMapa')
 
 
   //crea un nuevo mapa explorar los lugares por categoria
-  mapaProvider.lugares = function (cat,coord) {
     //consultamos si ya consultaron esa categoria
+  mapaProvider.lugares = function (cat,coord) {
     if(!yaConsultado(cat)){
       mapaProvider.hayObj = true;
       $log.info("Consultando..");
@@ -135,11 +135,9 @@ angular.module('hereMapa')
         var marcador = new H.map.Marker({ lat:coords.lat, lng:coords.long},
         { icon: icon });
 
-        $log.warn("holas");
-        $log.warn(mapaProvider.coordUser);
         
         objJson.id = Math.random() * (100 - i) + i;
-        objJson.rutaRequestParams.waypoint0=coord.lat+","+coord.lng;
+        objJson.rutaRequestParams.waypoint0=mapaProvider.coordUser.lat+","+mapaProvider.coordUser.lng;
         objJson.rutaRequestParams.waypoint1=items[i].position[0]+","+items[i].position[1];
         objJson.distancia=items[i].distance;
 
@@ -160,7 +158,6 @@ angular.module('hereMapa')
         marcador.ruta=0;
         marcador.eliminar=true;
         group.addObject(marcador);
-
         //funcionalidad para sobreponer marcador 
         var zIndex=1;
         mapaProvider.map.addEventListener('tap', function (evt) {

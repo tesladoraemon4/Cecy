@@ -53,8 +53,6 @@ angular.module('hereMapa',['ngGeolocation'])
 			//refresca la vista del mapa 
 			var refreshMapMarker = 
 				setInterval(function () {
-				$log.log("refreshMapMarker Error geo "+geolocalitation.errorGeo);
-
 				if(geolocalitation.errorGeo){
 					var coor =$scope.coordsUser;
 					var aux = markerObject;

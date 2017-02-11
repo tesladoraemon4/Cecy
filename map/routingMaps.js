@@ -39,15 +39,12 @@ angular.module('hereMapa')
 			useHTTPS: true
 		});
 
-		var rutar = platform.getRoutingService(),
-		rutaRequestParams = configObj.rutaRequestParams;
-
-
-
-
-		console.log(rutaRequestParams);
+		var rutar = platform.getRoutingService();
+		console.log("Config de ruta ");
+		console.log(configObj.rutaRequestParams);
+		console.log(configObj.rutaRequestParams);
 		rutar.calculateRoute(
-		  rutaRequestParams,
+		  configObj.rutaRequestParams,
 		  onSuccess,
 		  onError
 		);
@@ -87,7 +84,7 @@ angular.module('hereMapa')
 		var array = map.getObjects();
 		console.log("eliminando ruta...............");
 		for (var i = array.length - 1; i >= 0; i--)
-			if(array[i].ruta==id)
+			if(array[i].id==id &&array[i].eliminar==true)
 				array[i].dispose();
 			
 		hayRutas=false;
@@ -141,17 +138,6 @@ angular.module('hereMapa')
 
 
 	var getTransport0=function () {
-		//Obtenemos los contenidos
-		/*var div = document.getElementById('contenedorBubble');
-		console.log("Buscando el transporte");
-		console.log(div);
-
-		arrayTrans=div.getElementsByTagName('input');
-		var i;
-		for (i = arrayTrans.length - 1; i >= 0; i--)
-			if(arrayTrans[i].checked)
-				break;
-			*/
 		return sessionStorage.getItem("transport");
 	}
 
@@ -170,17 +156,18 @@ angular.module('hereMapa')
 	var bubble;
 
 	var openBubble=function (position, text){
-	 if(!bubble){
+	 if(!bubble){//no hay burbuja 
 	    bubble =  new H.ui.InfoBubble(
 	      position,
 	      {
-	      	content: text+"<br>"+eliminarRutaBtn+id+eliminarRutaBtn2}
+	      	content: text+"<br>"+eliminarRutaBtn+id+eliminarRutaBtn2
+	      }
 	      );
 	    bubble.eliminar=true;
 	    ui.addBubble(bubble);
-	  } else {
+	  } else {//si hay burbuja
 	    bubble.setPosition(position);
-	    bubble.setContent({content: text+"\n"+eliminarRutaBtn+id+eliminarRutaBtn2});
+	    bubble.setContent(text+"<br>"+eliminarRutaBtn+id+eliminarRutaBtn2);
 	    bubble.open();
 	  }
 	}
@@ -233,7 +220,7 @@ angular.module('hereMapa')
 		j;
 
 		//anadiendo marcadores en cada maniobra
-		for (i = 0;  i < ruta.leg.length; i += 1) 
+		for (i = 0;  i < ruta.leg.length; i += 1) {
 			for (j = 0;  j < ruta.leg[i].maneuver.length; j += 1) {
 				maneuver = ruta.leg[i].maneuver[j];
 				var marker =  new H.map.Marker(
@@ -241,7 +228,7 @@ angular.module('hereMapa')
 					lng: maneuver.position.longitude} ,
 					{icon: dotIcon}
 				);
-				marker.instruction = maneuver.instruction;
+				marker.setData(maneuver.instruction);
 				//atributos añadidos
 				marker.ruta = 1;
 				marker.id = id;
@@ -249,12 +236,11 @@ angular.module('hereMapa')
 				
 				group.addObject(marker);
 			}
-		
+		}
 		//anades eventos a cada maniobra
 		group.addEventListener('tap', function (evt) {
 			map.setCenter(evt.target.getPosition());
-			openBubble(
-			evt.target.getPosition(), evt.target.instruction);
+			openBubble(evt.target.getPosition(), evt.target.getData());
 		}, false);
 		map.addObject(group);
 	  console.log("Anadiendo maniobras al mapa FINALIZADO");
@@ -287,7 +273,6 @@ angular.module('hereMapa')
 	}
 
 	var AgregarInstruccionesAlPanel=function (ruta){
-		console.log(ruta);
 		var nodeOL = document.createElement('ol'),i,j;
 
 		nodeOL.style.fontSize = 'small';
